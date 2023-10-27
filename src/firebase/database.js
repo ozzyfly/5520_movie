@@ -10,5 +10,3 @@ export const addUserReview = async (userId, review) => {
     console.error("Error adding review:", error);
   }
 };
-
-// ... other related Firestore database functions

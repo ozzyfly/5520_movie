@@ -1,12 +1,16 @@
 export default {
-  heading: {
+  header1: {
+    fontSize: 28,
+    fontWeight: "bold",
+  },
+  header2: {
     fontSize: 24,
     fontWeight: "bold",
   },
-  subheading: {
-    fontSize: 18,
-  },
-  body: {
+  bodyText: {
     fontSize: 16,
+  },
+  caption: {
+    fontSize: 12,
   },
 };

@@ -4,7 +4,11 @@ export default {
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
+  },
+  center: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   header: {
     fontSize: 28,

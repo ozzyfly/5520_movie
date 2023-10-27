@@ -1,43 +1,25 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import MovieCard from "../components/MovieCard";
+import { fetchMovieList } from "../utilities/tmdbAPI";
 
-const data = [
-  { id: "1", title: "Movie A" },
-  { id: "2", title: "Movie B" },
-  // ... Add more dummy data
-];
+function MovieListScreen() {
+  const [movies, setMovies] = useState([]);
 
-const MovieListScreen = () => {
+  useEffect(() => {
+    fetchMovieList().then((data) => {
+      setMovies(data.results);
+    });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>List of Popular Movies</Text>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <Text style={styles.item}>{item.title}</Text>}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <div>
+      {movies.length ? (
+        movies.map((movie) => <MovieCard key={movie.id} movie={movie} />)
+      ) : (
+        <Text>No movies found.</Text>
+      )}
+    </div>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-    backgroundColor: "#F5F5F5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  item: {
-    padding: 20,
-    fontSize: 18,
-    borderBottomColor: "#ddd",
-    borderBottomWidth: 1,
-  },
-});
+}
 
 export default MovieListScreen;
