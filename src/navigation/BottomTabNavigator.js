@@ -1,11 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import StackNavigator from "./StackNavigator"; // Removed OverbudgetStackNavigator
+import StackNavigator from "./StackNavigator";
 import { Ionicons } from "@expo/vector-icons";
 import ProfileScreen from "../screens/ProfileScreen";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import MainScreen from "../screens/MainScreen";
-import MovieListScreen from "../screens/MovieListScreen";
+import NearbyCinemasScreen from "../screens/NearbyCinemasScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,8 +18,9 @@ const BottomTabNavigator = () => {
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
-            // Added this condition
             iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Cinemas") {
+            iconName = focused ? "film" : "film-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -41,22 +40,15 @@ const BottomTabNavigator = () => {
         component={StackNavigator}
         options={{ headerShown: false }}
       />
-      {/* Removed Overbudget screen as there's no OverbudgetStackNavigator */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => {
-            return (
-              <Ionicons
-                name={focused ? "person" : "person-outline"}
-                size={size}
-                color={color}
-              />
-            );
-          },
-        }}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Cinemas"
+        component={NearbyCinemasScreen}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );
