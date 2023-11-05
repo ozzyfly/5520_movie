@@ -11,7 +11,6 @@ export const fetchTrendingMovies = async () => {
       },
     });
     const data = await response.json();
-    console.log("Trending Movies:", data);
     return data.results;
   } catch (error) {
     console.error("Failed fetching trending movies:", error);
@@ -36,7 +35,6 @@ export const fetchNewReleases = async () => {
       }
     );
     const data = await response.json();
-    console.log("New Releases:", data);
     return data.results;
   } catch (error) {
     console.error("Failed fetching new releases:", error);
