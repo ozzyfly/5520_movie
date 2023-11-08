@@ -40,3 +40,18 @@ export const fetchNewReleases = async () => {
     console.error("Failed fetching new releases:", error);
   }
 };
+
+export const fetchMovieDetails = async (movieId) => {
+  try {
+    const response = await fetch(`${BASE_URL}/movie/${movieId}`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_API_KEY}`,
+        "Content-Type": "application/json;charset=utf-8",
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Failed fetching details for movie ID ${movieId}:`, error);
+  }
+};

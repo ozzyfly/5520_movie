@@ -3,13 +3,20 @@ import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { DEFAULT_IMAGE_URL } from "../utilities/constants";
 
-const MovieCard = ({ movie }) => {
+const MovieCard = ({ movie, navigation }) => {
   const posterPath = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : DEFAULT_IMAGE_URL;
 
+  // Function to navigate to MovieDetailScreen with the current movie's details
+  const navigateToMovieDetail = () => {
+    navigation.navigate("MovieDetail", { movie });
+  };
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate("MovieDetails", { movieId: movie.id })}
+    >
       <Image source={{ uri: posterPath }} style={styles.image} />
       <Text style={styles.title} numberOfLines={1}>
         {movie.title}

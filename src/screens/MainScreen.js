@@ -26,7 +26,9 @@ function MainScreen({ navigation }) {
         <Text style={typography.sectionTitle}>Trending Movies</Text>
         <FlatList
           data={trendingMovies}
-          renderItem={({ item }) => <MovieCard movie={item} />}
+          renderItem={({ item }) => (
+            <MovieCard movie={item} navigation={navigation} />
+          )}
           keyExtractor={(item) => item.id.toString()}
           horizontal
         />
@@ -35,7 +37,9 @@ function MainScreen({ navigation }) {
         <Text style={typography.sectionTitle}>New Releases</Text>
         <FlatList
           data={newReleases}
-          renderItem={({ item }) => <MovieCard movie={item} />}
+          renderItem={({ item }) => (
+            <MovieCard movie={item} navigation={navigation} />
+          )}
           keyExtractor={(item) => item.id.toString()}
           horizontal
         />
