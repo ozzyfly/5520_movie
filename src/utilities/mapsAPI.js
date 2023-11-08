@@ -7,7 +7,6 @@ export const fetchNearbyCinemas = async (latitude, longitude) => {
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=5000&type=movie_theater&key=${GOOGLE_MAPS_API_KEY}`
     );
     if (response.data) {
-      console.log("API Response:", response.data);
       if (response.data.results) {
         return response.data.results;
       } else {
