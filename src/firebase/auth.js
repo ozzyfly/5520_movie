@@ -1,4 +1,4 @@
-import * as firebase from "firebase";
+import { firestore } from "./config";
 
 export const signIn = async (email, password) => {
   try {
