@@ -1,3 +1,4 @@
+// Signup.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -5,6 +6,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
 
 export default function Signup({ navigation }) {
+  const [name, setName] = useState(""); // New state for name
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,12 +16,12 @@ export default function Signup({ navigation }) {
   };
 
   const signupHandler = async () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert("Fields should not be empty");
+    if (!name || !email || !password || !confirmPassword) {
+      Alert.alert("All fields are required.");
       return;
     }
-    if (confirmPassword !== password) {
-      Alert.alert("Password and confirm password should be equal");
+    if (password !== confirmPassword) {
+      Alert.alert("Passwords do not match.");
       return;
     }
     try {
@@ -28,21 +30,26 @@ export default function Signup({ navigation }) {
         email,
         password
       );
-      // Store the user data in Firestore upon successful signup
       const userRef = doc(db, "users", userCred.user.uid);
       await setDoc(userRef, {
+        name: name,
         email: email,
         createdAt: new Date(),
-        // You can add more user-related data here if needed
       });
-      // Navigate to the app's main screen or perform other actions
+      navigation.navigate("Home"); // Navigate to the home screen
     } catch (err) {
-      console.error("Sign up error", err.code);
-      // Handle different error codes and show appropriate feedback to the user
+      Alert.alert("Error signing up", err.message);
     }
   };
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Name</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={(text) => setName(text)}
+      />
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}

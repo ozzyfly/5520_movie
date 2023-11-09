@@ -2,33 +2,64 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, ActivityIndicator, Alert } from "react-native";
 import { getUserData } from "../firebase/database";
-import { signOut } from "../firebase/auth"; // Make sure this path is correct
+import { signOut } from "../firebase/auth";
+import { auth, db } from "../firebase/config";
+import { onSnapshot, doc } from "firebase/firestore";
 
 const ProfileScreen = ({ navigation }) => {
-  const userId = "user_id"; // Replace with actual user ID retrieval logic
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getUserData(userId);
-      setUserData(data);
-      setLoading(false);
-    };
+    let unsubscribe = () => {};
 
-    fetchData();
-  }, [userId]);
+    if (auth.currentUser) {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+
+      // onSnapshot listens for real-time updates
+      unsubscribe = onSnapshot(
+        userRef,
+        (doc) => {
+          if (doc.exists()) {
+            setUserData(doc.data());
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+          setLoading(false);
+        },
+        (error) => {
+          // Handle the error here
+          console.error("Error fetching user data: ", error);
+          Alert.alert("Error", "Could not fetch user data.");
+          setLoading(false);
+        }
+      );
+    } else {
+      setLoading(false);
+    }
+
+    // Cleanup listener when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
   const handleEditProfilePress = () => {
+    // Check if userData is valid before navigation
+    if (!userData || !userData.id) {
+      Alert.alert("Error", "User data is incomplete. Cannot edit profile.");
+      return;
+    }
     navigation.navigate("EditProfileScreen", { userData: userData });
   };
-
-  // Add the logout functionality
+  // Logout functionality
   const handleLogout = async () => {
     try {
       await signOut();
       // Navigate to the login screen or reset the navigation state as necessary
-      navigation.navigate("Login");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } catch (error) {
       Alert.alert("Logout Error", "Unable to logout. Please try again.");
     }
@@ -38,12 +69,24 @@ const ProfileScreen = ({ navigation }) => {
     return <ActivityIndicator />;
   }
 
+  // If no user data is found, it likely means we're not logged in.
+  if (!userData) {
+    return (
+      <View>
+        <Text>User not found, please log in again.</Text>
+        <Button
+          title="Go to Login"
+          onPress={() => navigation.navigate("Login")}
+        />
+      </View>
+    );
+  }
+
   return (
     <View>
       <Text>Name: {userData?.name}</Text>
       <Text>Email: {userData?.email}</Text>
       <Button title="Edit Profile" onPress={handleEditProfilePress} />
-      {/* Add a logout button */}
       <Button title="Logout" onPress={handleLogout} />
     </View>
   );

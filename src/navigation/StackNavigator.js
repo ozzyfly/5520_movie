@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "../screens/MainScreen";
-import NearbyCinemasScreen from "../screens/NearbyCinemasScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
+import EditProfileScreen from "../screens/EditProfileScreen"; // Import your EditProfileScreen
 import { Ionicons } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
@@ -27,6 +27,12 @@ const StackNavigator = ({ navigation }) => {
         name="MovieDetails"
         component={MovieDetailsScreen}
         options={{ title: "Movie Details" }}
+      />
+      {/* Add the EditProfileScreen to the stack navigator */}
+      <Stack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{ title: "Edit Profile" }}
       />
       {/* ... other screens */}
     </Stack.Navigator>
