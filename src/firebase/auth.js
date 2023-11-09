@@ -1,8 +1,12 @@
-import { firestore } from "./config";
+import { auth } from "./config";
+import {
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
 
 export const signIn = async (email, password) => {
   try {
-    await firebase.auth().signInWithEmailAndPassword(email, password);
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     console.error("Error signing in:", error);
   }
@@ -10,10 +14,8 @@ export const signIn = async (email, password) => {
 
 export const signOut = async () => {
   try {
-    await firebase.auth().signOut();
+    await firebaseSignOut(auth);
   } catch (error) {
     console.error("Error signing out:", error);
   }
 };
-
-// ... other related authentication functions
