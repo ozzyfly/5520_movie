@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase/config";
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
@@ -9,15 +10,16 @@ export default function Signup({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const loginHandler = () => {
-    navigation.replace("Login");
+    navigation.navigate("Login");
   };
+
   const signupHandler = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert("Fields should not be empty");
       return;
     }
     if (confirmPassword !== password) {
-      Alert.alert("password and confirmpassword should be equal");
+      Alert.alert("Password and confirm password should be equal");
       return;
     }
     try {
@@ -26,14 +28,17 @@ export default function Signup({ navigation }) {
         email,
         password
       );
-      console.log(userCred);
+      // Store the user data in Firestore upon successful signup
+      const userRef = doc(db, "users", userCred.user.uid);
+      await setDoc(userRef, {
+        email: email,
+        createdAt: new Date(),
+        // You can add more user-related data here if needed
+      });
+      // Navigate to the app's main screen or perform other actions
     } catch (err) {
-      console.log("sign up error ", err.code);
-      if (err.code === "auth/invalid-email") {
-        Alert.alert("email is invalid");
-      } else if (err.code === "auth/weak-password") {
-        Alert.alert("password should be minimum 6 characters");
-      }
+      console.error("Sign up error", err.code);
+      // Handle different error codes and show appropriate feedback to the user
     }
   };
   return (

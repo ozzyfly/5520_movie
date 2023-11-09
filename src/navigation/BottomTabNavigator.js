@@ -10,12 +10,12 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
+          if (route.name === "HomeTab") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -36,7 +36,7 @@ const BottomTabNavigator = () => {
       })}
     >
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         component={StackNavigator}
         options={{ headerShown: false }}
       />

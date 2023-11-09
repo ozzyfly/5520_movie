@@ -1,15 +1,21 @@
-import { db } from "./config";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "./config"; // Adjust the path to where your config is
+import { doc, getDoc } from "firebase/firestore";
 
-export const addUserReview = async (userId, review) => {
+export const getUserData = async (userId) => {
   try {
     const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
-      reviews: arrayUnion(review),
-    });
+    const docSnap = await getDoc(userRef);
+
+    if (docSnap.exists()) {
+      // The document data will be in the docSnap.data() method
+      return docSnap.data();
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+      return null;
+    }
   } catch (error) {
-    console.error("Error adding review:", error);
+    console.error("Error getting user data:", error);
+    throw error; // Re-throw the error so you can catch it where the function is called
   }
 };
-
-// ... other Firestore interaction functions

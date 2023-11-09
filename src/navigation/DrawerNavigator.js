@@ -8,9 +8,9 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator initialRouteName="HomeDrawer">
       <Drawer.Screen
-        name="Home"
+        name="HomeDrawer"
         component={BottomTabNavigator}
         options={{ drawerLabel: "Home" }}
       />
