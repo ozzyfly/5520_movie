@@ -1,9 +1,11 @@
 // EditProfileScreen.js
 import React, { useState } from "react";
 import { View, TextInput, Button, Alert } from "react-native";
-import { updateUserData } from "../firebase/database";
+import { updateUserDocument } from "../firebase/database"; // Corrected import statement
 
 const EditProfileScreen = ({ route, navigation }) => {
+  console.log("Received userData:", route.params?.userData);
+
   const userData = route.params?.userData;
   const [name, setName] = useState(userData?.name || "");
   const [email, setEmail] = useState(userData?.email || "");
@@ -19,11 +21,14 @@ const EditProfileScreen = ({ route, navigation }) => {
     }
 
     try {
-      await updateUserData(userData.id, { name, email });
+      await updateUserDocument(userData.id, { name, email }); // Using the correct function
       Alert.alert("Success", "Profile updated successfully!");
       navigation.goBack();
     } catch (error) {
-      Alert.alert("Error updating profile", error.message);
+      Alert.alert(
+        "Error updating profile",
+        error.message || "An unknown error occurred"
+      );
     }
   };
 

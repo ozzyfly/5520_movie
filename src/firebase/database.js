@@ -98,11 +98,11 @@ export const getReplies = async (reviewId) => {
     console.error("Error fetching replies:", error);
   }
 };
-// Function to add a review to a movie
+
 export const addReviewToMovie = async (movieId, reviewData) => {
   try {
-    const reviewRef = doc(collection(db, "movies", movieId, "reviews"));
-    await setDoc(reviewRef, reviewData);
+    const reviewRef = collection(db, "movies", movieId, "reviews");
+    await addDoc(reviewRef, reviewData);
   } catch (error) {
     console.error("Error adding review to movie:", error);
     throw error;
@@ -112,7 +112,7 @@ export const addReviewToMovie = async (movieId, reviewData) => {
 // Function to add a reply to a review
 export const addReplyToReview = async (movieId, reviewId, replyData) => {
   try {
-    const reviewReplyRef = collection(
+    const replyRef = collection(
       db,
       "movies",
       movieId,
@@ -120,8 +120,8 @@ export const addReplyToReview = async (movieId, reviewId, replyData) => {
       reviewId,
       "replies"
     );
-    await addDoc(reviewReplyRef, replyData);
-    // Here you would trigger a notification to the user who wrote the original review
+    await addDoc(replyRef, replyData);
+    return replyRef.id; // Return the reply ID to use for notifications
   } catch (error) {
     console.error("Error adding reply to review:", error);
     throw error;
@@ -155,6 +155,16 @@ export const getRepliesForReview = async (movieId, reviewId) => {
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error getting replies for review:", error);
+    throw error;
+  }
+};
+
+export const saveMovieDetailsToFirestore = async (movieDetails) => {
+  try {
+    const movieRef = doc(db, "movies", movieDetails.id.toString());
+    await setDoc(movieRef, movieDetails);
+  } catch (error) {
+    console.error("Error saving movie details:", error);
     throw error;
   }
 };

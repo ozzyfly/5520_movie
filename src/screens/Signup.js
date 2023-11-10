@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase/config";
-import { createUserDocument } from "../firebase/database"; // Renamed for clarity
+import { createUserDocument } from "../firebase/database";
 
 export default function Signup({ navigation }) {
   const [name, setName] = useState(""); // New state for name
@@ -31,9 +31,10 @@ export default function Signup({ navigation }) {
         password
       );
       await createUserDocument(userCred.user.uid, {
-        name: name,
-        email: email,
+        name,
+        email,
         createdAt: new Date(),
+        // Add additional fields as needed
       });
       navigation.navigate("Home");
     } catch (err) {

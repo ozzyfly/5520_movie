@@ -4,6 +4,7 @@ import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import styles from "../styles/general";
 import typography from "../styles/typography";
 import { fetchMovieDetails } from "../utilities/tmdbAPI";
+import { saveMovieDetailsToFirestore } from "../firebase/database";
 
 function MovieDetailsScreen({ route }) {
   const { movieId } = route.params;
@@ -13,6 +14,7 @@ function MovieDetailsScreen({ route }) {
     const fetchDetails = async () => {
       const details = await fetchMovieDetails(movieId);
       setMovieDetails(details);
+      saveMovieDetailsToFirestore(details);
     };
     fetchDetails();
   }, [movieId]);

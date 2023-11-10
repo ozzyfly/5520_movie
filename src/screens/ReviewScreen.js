@@ -36,12 +36,12 @@ const ReviewScreen = ({ route }) => {
     }
     const reviewData = {
       userId: auth.currentUser.uid,
+      username: auth.currentUser.displayName, // Or fetch from user's profile
       text: reviewText,
       createdAt: new Date(),
     };
-    await addReviewToMovie(movieId, reviewData);
+    await addReviewToMovie(movieId, reviewData); // Save the review to Firestore
     setReviewText("");
-    fetchReviews(movieId); // Refresh reviews
   };
 
   const handleReplyToReview = async (reviewId) => {

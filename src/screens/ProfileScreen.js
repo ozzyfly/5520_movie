@@ -16,20 +16,17 @@ const ProfileScreen = ({ navigation }) => {
     if (auth.currentUser) {
       const userRef = doc(db, "users", auth.currentUser.uid);
 
-      // onSnapshot listens for real-time updates
       unsubscribe = onSnapshot(
         userRef,
         (doc) => {
           if (doc.exists()) {
-            setUserData(doc.data());
+            setUserData({ id: doc.id, ...doc.data() }); // Include the document ID
           } else {
-            // doc.data() will be undefined in this case
             console.log("No such document!");
           }
           setLoading(false);
         },
         (error) => {
-          // Handle the error here
           console.error("Error fetching user data: ", error);
           Alert.alert("Error", "Could not fetch user data.");
           setLoading(false);
@@ -39,18 +36,17 @@ const ProfileScreen = ({ navigation }) => {
       setLoading(false);
     }
 
-    // Cleanup listener when the component unmounts
     return () => unsubscribe();
   }, []);
 
   const handleEditProfilePress = () => {
-    // Check if userData is valid before navigation
     if (!userData || !userData.id) {
       Alert.alert("Error", "User data is incomplete. Cannot edit profile.");
       return;
     }
     navigation.navigate("EditProfileScreen", { userData: userData });
   };
+
   // Logout functionality
   const handleLogout = async () => {
     try {
