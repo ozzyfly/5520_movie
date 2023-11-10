@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/config";
+import { createUserDocument } from "../firebase/database"; // Renamed for clarity
 
 export default function Signup({ navigation }) {
   const [name, setName] = useState(""); // New state for name
@@ -30,13 +30,12 @@ export default function Signup({ navigation }) {
         email,
         password
       );
-      const userRef = doc(db, "users", userCred.user.uid);
-      await setDoc(userRef, {
+      await createUserDocument(userCred.user.uid, {
         name: name,
         email: email,
         createdAt: new Date(),
       });
-      navigation.navigate("Home"); // Navigate to the home screen
+      navigation.navigate("Home");
     } catch (err) {
       Alert.alert("Error signing up", err.message);
     }
