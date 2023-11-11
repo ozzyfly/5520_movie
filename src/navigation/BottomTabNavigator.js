@@ -1,10 +1,10 @@
 // BottomTabNavigator.js
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import StackNavigator from "./StackNavigator"; // This will include the 'Main' screen and others you have defined.
 import { Ionicons } from "@expo/vector-icons";
+import StackNavigator from "./StackNavigator"; // This will include the 'Main' screen and others you have defined.
 import NearbyCinemasScreen from "../screens/NearbyCinemasScreen";
-import ReviewScreen from "../screens/ReviewScreen";
+import ReviewListScreen from "../screens/ReviewListScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,16 +19,13 @@ const BottomTabNavigator = () => {
           if (route.name === "HomeTab") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Profile") {
-            // Ensure you have a 'Profile' screen if you're using this icon.
             iconName = focused ? "person" : "person-outline";
           } else if (route.name === "Cinemas") {
             iconName = focused ? "film" : "film-outline";
-          } else if (route.name === "Reviews") {
-            // Add icon for Reviews tab.
-            iconName = focused ? "star" : "star-outline";
+          } else if (route.name === "ReviewList") {
+            iconName = focused ? "list" : "list-outline";
           }
 
-          // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: "tomato",
@@ -47,16 +44,15 @@ const BottomTabNavigator = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Reviews"
-        component={ReviewScreen}
-        options={{ headerShown: false }}
+        name="ReviewList"
+        component={ReviewListScreen}
+        options={{ headerShown: false, title: "Review List" }}
       />
       <Tab.Screen
         name="Cinemas"
         component={NearbyCinemasScreen}
         options={{ headerShown: false }}
       />
-      {/* Add more tabs as needed */}
     </Tab.Navigator>
   );
 };

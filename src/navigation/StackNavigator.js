@@ -2,11 +2,11 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MainScreen from "../screens/MainScreen";
 import MovieDetailsScreen from "../screens/MovieDetailsScreen";
-import EditProfileScreen from "../screens/EditProfileScreen"; // Import your EditProfileScreen
-import ReviewScreen from "../screens/ReviewScreen"; // Import the ReviewScreen
+import EditProfileScreen from "../screens/EditProfileScreen";
+import ReviewScreen from "../screens/ReviewScreen";
 import { Ionicons } from "@expo/vector-icons";
-import ReviewListScreen from "../screens//ReviewListScreen";
-import AddReviewScreen from "../screens//AddReviewScreen";
+import ReviewListScreen from "../screens/ReviewListScreen";
+import AddReviewScreen from "../screens/AddReviewScreen";
 
 const Stack = createStackNavigator();
 
@@ -31,7 +31,6 @@ const StackNavigator = ({ navigation }) => {
         component={MovieDetailsScreen}
         options={{ title: "Movie Details" }}
       />
-      {/* Add the EditProfileScreen to the stack navigator */}
       <Stack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
@@ -40,11 +39,6 @@ const StackNavigator = ({ navigation }) => {
       <Stack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        options={{ title: "Movie Reviews" }}
-      />
-      <Stack.Screen
-        name="ReviewListScreen"
-        component={ReviewListScreen}
         options={{ title: "Movie Reviews" }}
       />
       <Stack.Screen
