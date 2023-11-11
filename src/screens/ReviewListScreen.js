@@ -1,45 +1,37 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+// src/screens/ReviewListScreen.js
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 
-const data = [
-  { id: "1", review: "Great movie!" },
-  { id: "2", review: "It was okay." },
-  // ... Add more dummy data
-];
+const ReviewListScreen = ({ navigation }) => {
+  // Assuming you have a function getMoviesWithReviews that fetches movies
+  const [moviesWithReviews, setMoviesWithReviews] = useState([]);
 
-const ReviewListScreen = () => {
+  useEffect(() => {
+    const fetchMoviesWithReviews = async () => {
+      const movies = await getMoviesWithReviews();
+      setMoviesWithReviews(movies);
+    };
+
+    fetchMoviesWithReviews();
+  }, []);
+
+  const renderMovieItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("MovieDetailsScreen", { movieId: item.id })
+      }
+    >
+      <Text>{item.title}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>List of Movie Reviews</Text>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <Text style={styles.item}>{item.review}</Text>
-        )}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <FlatList
+      data={moviesWithReviews}
+      renderItem={renderMovieItem}
+      keyExtractor={(item) => item.id.toString()}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-    backgroundColor: "#F5F5F5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  item: {
-    padding: 20,
-    fontSize: 18,
-    borderBottomColor: "#ddd",
-    borderBottomWidth: 1,
-  },
-});
 
 export default ReviewListScreen;

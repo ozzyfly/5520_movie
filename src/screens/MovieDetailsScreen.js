@@ -1,12 +1,19 @@
 // src/screens/MovieDetailsScreen.js
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Button,
+} from "react-native";
 import styles from "../styles/general";
 import typography from "../styles/typography";
 import { fetchMovieDetails } from "../utilities/tmdbAPI";
 import { saveMovieDetailsToFirestore } from "../firebase/database";
 
-function MovieDetailsScreen({ route }) {
+function MovieDetailsScreen({ route, navigation }) {
   const { movieId } = route.params;
   const [movieDetails, setMovieDetails] = useState(null);
 
@@ -62,6 +69,20 @@ function MovieDetailsScreen({ route }) {
         ))}
       </View>
       <Text style={typography.text}>{movieDetails.overview}</Text>
+      <Button
+        title="View Reviews"
+        onPress={() =>
+          navigation.navigate("ReviewScreen", { movieId: String(movieId) })
+        }
+      />
+      <Button
+        title="Add Review"
+        onPress={() =>
+          navigation.navigate("AddReviewScreen", {
+            movieId: String(movieDetails.id),
+          })
+        }
+      />
       {/* You can add more details like directors, cast, etc., here */}
     </ScrollView>
   );

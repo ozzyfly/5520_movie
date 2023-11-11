@@ -5,6 +5,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  getDoc,
   addDoc,
   getDocs,
   query,
@@ -99,12 +100,39 @@ export const getReplies = async (reviewId) => {
   }
 };
 
-export const addReviewToMovie = async (movieId, reviewData) => {
+export const addReviewToMovie = async (movieId, userId, reviewText) => {
+  if (!movieId) {
+    throw new Error("movieId is undefined or not a string.");
+  }
+  if (!userId) {
+    throw new Error("userId is undefined or not a string.");
+  }
+
+  const reviewRef = collection(db, "movies", movieId, "reviews");
+
+  const newReview = {
+    userId,
+    text: reviewText,
+    createdAt: new Date(),
+  };
+
   try {
-    const reviewRef = collection(db, "movies", movieId, "reviews");
-    await addDoc(reviewRef, reviewData);
+    await addDoc(reviewRef, newReview);
   } catch (error) {
     console.error("Error adding review to movie:", error);
+    throw new Error(error);
+  }
+};
+
+export const getMoviesWithReviews = async () => {
+  try {
+    const moviesRef = collection(db, "movies");
+    // This is a placeholder. You'll need to adjust this query based on your data structure.
+    const q = query(moviesRef, where("hasReviews", "==", true));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching movies with reviews:", error);
     throw error;
   }
 };
@@ -131,12 +159,15 @@ export const addReplyToReview = async (movieId, reviewId, replyData) => {
 // Function to get reviews for a movie
 export const getReviewsForMovie = async (movieId) => {
   try {
+    if (typeof movieId !== "string") {
+      throw new Error("movieId must be a string");
+    }
     const reviewsRef = collection(db, "movies", movieId, "reviews");
     const querySnapshot = await getDocs(reviewsRef);
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error getting reviews for movie:", error);
-    throw error;
+    throw error; // Rethrow the error to be caught by the calling function
   }
 };
 
@@ -166,5 +197,39 @@ export const saveMovieDetailsToFirestore = async (movieDetails) => {
   } catch (error) {
     console.error("Error saving movie details:", error);
     throw error;
+  }
+};
+
+export const getUserDocument = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      console.log("User data:", userSnap.data());
+      return userSnap.data(); // returns the user document data
+    } else {
+      console.log("No user found with ID:", userId);
+      throw new Error("User does not exist");
+    }
+  } catch (error) {
+    console.error("Error fetching user document:", error);
+    throw error;
+  }
+};
+
+const fetchUserName = async () => {
+  try {
+    const userRef = doc(db, "users", review.userId); // Assuming 'db' is your Firestore instance
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      setUserName(userSnap.data().name); // Assuming the user's name is stored under a 'name' field
+    } else {
+      console.log("No such document!");
+      setUserName("Unknown User");
+    }
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    setUserName("Unknown User"); // Fallback text
   }
 };
