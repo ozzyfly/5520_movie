@@ -1,27 +1,61 @@
-// src/screens/ReviewListScreen.js
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+
+import { getMoviesWithReviews, getReviewsForMovie } from "../firebase/database";
 
 const ReviewListScreen = ({ navigation }) => {
-  // Assuming you have a function getMoviesWithReviews that fetches movies
   const [moviesWithReviews, setMoviesWithReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigateToReviewScreen = (movieId) => {
+    navigation.navigate("ReviewScreen", { movieId });
+  };
 
   useEffect(() => {
-    const fetchMoviesWithReviews = async () => {
-      const movies = await getMoviesWithReviews();
-      setMoviesWithReviews(movies);
+    const fetchMovies = async () => {
+      try {
+        const movies = await getMoviesWithReviews();
+        const moviesWithReviewsData = await Promise.all(
+          movies.map(async (movie) => {
+            const reviews = await getReviewsForMovie(movie.id.toString());
+            return { ...movie, reviews };
+          })
+        );
+        setMoviesWithReviews(moviesWithReviewsData);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching movies:", err);
+        setError(err);
+        setLoading(false);
+      }
     };
 
-    fetchMoviesWithReviews();
+    fetchMovies();
   }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>Error loading movies: {error.message}</Text>;
+  }
 
   const renderMovieItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("MovieDetailsScreen", { movieId: item.id })
-      }
+      onPress={() => navigateToReviewScreen(item.id)}
+      style={styles.movieItem}
     >
-      <Text>{item.title}</Text>
+      <Text style={styles.movieTitle}>{item.title}</Text>
+      <Text style={styles.movieSubText}>View Reviews</Text>
     </TouchableOpacity>
   );
 
@@ -30,8 +64,29 @@ const ReviewListScreen = ({ navigation }) => {
       data={moviesWithReviews}
       renderItem={renderMovieItem}
       keyExtractor={(item) => item.id.toString()}
+      style={styles.list}
     />
   );
 };
-
+const styles = StyleSheet.create({
+  list: {
+    backgroundColor: "#f0f0f0",
+  },
+  movieItem: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  movieTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  movieSubText: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 5,
+  },
+});
 export default ReviewListScreen;

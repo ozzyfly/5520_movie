@@ -28,11 +28,13 @@ const ReviewScreen = ({ route }) => {
   }, [movieId]);
 
   if (!movieId) {
-    return <Text>No movie ID provided</Text>;
+    return <Text style={styles.noDataText}>No movie ID provided</Text>;
   }
 
   if (reviews.length === 0) {
-    return <Text>No reviews available for this movie</Text>; // Display message if no reviews
+    return (
+      <Text style={styles.noDataText}>No reviews available for this movie</Text>
+    );
   }
 
   return (
@@ -48,6 +50,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f0f0f0",
+  },
+  noDataText: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 

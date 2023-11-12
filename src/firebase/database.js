@@ -14,6 +14,13 @@ import {
 
 // Create a user document in the "users" collection
 export const createUserDocument = async (userId, userData) => {
+  if (!userId || typeof userId !== "string") {
+    throw new Error("Invalid or missing userId");
+  }
+  if (!userData || typeof userData !== "object") {
+    throw new Error("Invalid user data");
+  }
+
   try {
     const userRef = doc(db, "users", userId);
     await setDoc(userRef, userData);
@@ -101,22 +108,19 @@ export const getReplies = async (reviewId) => {
 };
 
 export const addReviewToMovie = async (movieId, userId, reviewText) => {
-  if (!movieId) {
-    throw new Error("movieId is undefined or not a string.");
+  if (!movieId || typeof movieId !== "string") {
+    throw new Error("Invalid movieId");
   }
-  if (!userId) {
-    throw new Error("userId is undefined or not a string.");
+  if (!userId || typeof userId !== "string") {
+    throw new Error("Invalid userId");
   }
-
-  const reviewRef = collection(db, "movies", movieId, "reviews");
-
-  const newReview = {
-    userId,
-    text: reviewText,
-    createdAt: new Date(),
-  };
+  if (!reviewText || typeof reviewText !== "string") {
+    throw new Error("Review text is required");
+  }
 
   try {
+    const reviewRef = collection(db, "movies", movieId, "reviews");
+    const newReview = { userId, text: reviewText, createdAt: new Date() };
     await addDoc(reviewRef, newReview);
   } catch (error) {
     console.error("Error adding review to movie:", error);
@@ -127,12 +131,15 @@ export const addReviewToMovie = async (movieId, userId, reviewText) => {
 export const getMoviesWithReviews = async () => {
   try {
     const moviesRef = collection(db, "movies");
-    // This is a placeholder. You'll need to adjust this query based on your data structure.
-    const q = query(moviesRef, where("hasReviews", "==", true));
-    const querySnapshot = await getDocs(q);
+    // const q = query(moviesRef, where("hasReviews", "==", true)); // Comment this out for testing
+    const querySnapshot = await getDocs(moviesRef); // Fetch all movies
+    console.log(
+      "Query executed, number of movies fetched:",
+      querySnapshot.docs.length
+    );
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
-    console.error("Error fetching movies with reviews:", error);
+    console.error("Error fetching movies:", error);
     throw error;
   }
 };
@@ -191,6 +198,13 @@ export const getRepliesForReview = async (movieId, reviewId) => {
 };
 
 export const saveMovieDetailsToFirestore = async (movieDetails) => {
+  if (!movieDetails || typeof movieDetails !== "object") {
+    throw new Error("Invalid movie details");
+  }
+  if (!movieDetails.id) {
+    throw new Error("Movie ID is required");
+  }
+
   try {
     const movieRef = doc(db, "movies", movieDetails.id.toString());
     await setDoc(movieRef, movieDetails);

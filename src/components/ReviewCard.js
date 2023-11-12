@@ -36,10 +36,10 @@ const ReviewCard = ({ review }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#ffffff",
-    borderRadius: 6,
-    padding: 15,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    borderRadius: 8,
+    padding: 16,
+    marginVertical: 10,
+    marginHorizontal: 20,
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowColor: "#000",
@@ -48,13 +48,13 @@ const styles = StyleSheet.create({
   },
   criticName: {
     fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 5,
+    fontSize: 16,
+    marginBottom: 8,
   },
   reviewContent: {
     fontSize: 14,
     color: "#333333",
-    marginBottom: 5,
+    marginBottom: 8,
   },
   reviewDate: {
     fontSize: 12,
@@ -62,5 +62,4 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
 });
-
 export default ReviewCard;
