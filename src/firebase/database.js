@@ -219,8 +219,7 @@ export const getUserDocument = async (userId) => {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      console.log("User data:", userSnap.data());
-      return userSnap.data(); // returns the user document data
+      return { id: userSnap.id, ...userSnap.data() }; // Include the user's ID
     } else {
       console.log("No user found with ID:", userId);
       throw new Error("User does not exist");

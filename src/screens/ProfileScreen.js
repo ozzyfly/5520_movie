@@ -1,42 +1,35 @@
-// Import necessary dependencies
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, ActivityIndicator, Alert } from "react-native";
-import { getUserData } from "../firebase/database";
+import {
+  View,
+  Text,
+  Button,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+} from "react-native";
+import { getUserDocument } from "../firebase/database";
 import { signOut } from "../firebase/auth";
-import { auth, db } from "../firebase/config";
-import { onSnapshot, doc } from "firebase/firestore";
+import { auth } from "../firebase/config";
 
 const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let unsubscribe = () => {};
-
-    if (auth.currentUser) {
-      const userRef = doc(db, "users", auth.currentUser.uid);
-
-      unsubscribe = onSnapshot(
-        userRef,
-        (doc) => {
-          if (doc.exists()) {
-            setUserData({ id: doc.id, ...doc.data() }); // Include the document ID
-          } else {
-            console.log("No such document!");
-          }
-          setLoading(false);
-        },
-        (error) => {
-          console.error("Error fetching user data: ", error);
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        try {
+          const data = await getUserDocument(auth.currentUser.uid);
+          setUserData(data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
           Alert.alert("Error", "Could not fetch user data.");
-          setLoading(false);
         }
-      );
-    } else {
+      }
       setLoading(false);
-    }
+    };
 
-    return () => unsubscribe();
+    fetchUserData();
   }, []);
 
   const handleEditProfilePress = () => {
@@ -62,14 +55,15 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   if (loading) {
-    return <ActivityIndicator />;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  // If no user data is found, it likely means we're not logged in.
   if (!userData) {
     return (
-      <View>
-        <Text>User not found, please log in again.</Text>
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>
+          User not found, please log in again.
+        </Text>
         <Button
           title="Go to Login"
           onPress={() => navigation.navigate("Login")}
@@ -79,13 +73,43 @@ const ProfileScreen = ({ navigation }) => {
   }
 
   return (
-    <View>
-      <Text>Name: {userData?.name}</Text>
-      <Text>Email: {userData?.email}</Text>
-      <Button title="Edit Profile" onPress={handleEditProfilePress} />
-      <Button title="Logout" onPress={handleLogout} />
+    <View style={styles.container}>
+      <Text style={styles.userInfoText}>Name: {userData?.name}</Text>
+      <Text style={styles.userInfoText}>Email: {userData?.email}</Text>
+      {/* Add more user context here if needed */}
+      <View style={styles.buttonContainer}>
+        <Button title="Edit Profile" onPress={handleEditProfilePress} />
+        <Button title="Logout" onPress={handleLogout} color="red" />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "flex-start",
+    backgroundColor: "#f0f0f0",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+  },
+  userInfoText: {
+    fontSize: 18,
+    marginBottom: 10,
+    color: "#333",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "red",
+  },
+  buttonContainer: {
+    marginTop: 20,
+  },
+});
 
 export default ProfileScreen;
