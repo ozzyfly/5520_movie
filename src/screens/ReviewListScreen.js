@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
   Text,
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
   StyleSheet,
+  Image,
+  View,
 } from "react-native";
-
+import { fetchMovieDetails } from "../utilities/tmdbAPI";
 import { getMoviesWithReviews, getReviewsForMovie } from "../firebase/database";
 
 const ReviewListScreen = ({ navigation }) => {
@@ -23,13 +24,14 @@ const ReviewListScreen = ({ navigation }) => {
     const fetchMovies = async () => {
       try {
         const movies = await getMoviesWithReviews();
-        const moviesWithReviewsData = await Promise.all(
+        const moviesWithDetails = await Promise.all(
           movies.map(async (movie) => {
             const reviews = await getReviewsForMovie(movie.id.toString());
-            return { ...movie, reviews };
+            const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
+            return { ...movie, reviews, ...movieDetails };
           })
         );
-        setMoviesWithReviews(moviesWithReviewsData);
+        setMoviesWithReviews(moviesWithDetails);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching movies:", err);
@@ -54,8 +56,15 @@ const ReviewListScreen = ({ navigation }) => {
       onPress={() => navigateToReviewScreen(item.id)}
       style={styles.movieItem}
     >
-      <Text style={styles.movieTitle}>{item.title}</Text>
-      <Text style={styles.movieSubText}>View Reviews</Text>
+      <Image
+        source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
+        style={styles.movieImage}
+      />
+      <View style={styles.movieInfo}>
+        <Text style={styles.movieTitle}>{item.title}</Text>
+        <Text style={styles.movieSubText}>View Reviews</Text>
+        {/* You can add more details here like release date, rating, etc. */}
+      </View>
     </TouchableOpacity>
   );
 
@@ -73,20 +82,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#f0f0f0",
   },
   movieItem: {
+    flexDirection: "row",
     backgroundColor: "#fff",
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    alignItems: "center", // Align items in a row
+  },
+  movieImage: {
+    width: 80,
+    height: 120,
+    borderRadius: 10,
+    marginRight: 15,
+  },
+  movieInfo: {
+    flex: 1,
+    justifyContent: "center",
   },
   movieTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
+    marginBottom: 5,
   },
   movieSubText: {
     fontSize: 14,
     color: "#666",
-    marginTop: 5,
   },
 });
 export default ReviewListScreen;
