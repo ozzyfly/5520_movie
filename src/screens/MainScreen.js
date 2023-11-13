@@ -4,12 +4,25 @@ import styles from "../styles/general";
 import typography from "../styles/typography";
 import { fetchTrendingMovies, fetchNewReleases } from "../utilities/tmdbAPI";
 import MovieCard from "../components/MovieCard";
+import { getUserInfo } from "../firebase/auth";
 
 function MainScreen({ navigation }) {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [newReleases, setNewReleases] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const userData = await getUserInfo();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchCurrentUser();
+
     const fetchMovies = async () => {
       const trending = await fetchTrendingMovies();
       const newReleases = await fetchNewReleases();

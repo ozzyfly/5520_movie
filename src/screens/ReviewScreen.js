@@ -1,14 +1,26 @@
-// src/screens/ReviewScreen.js
 import React, { useState, useEffect } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { getReviewsForMovie } from "../firebase/database";
 import ReviewCard from "../components/ReviewCard";
+import { getUserInfo } from "../firebase/auth";
 
-const ReviewScreen = ({ route, currentUser }) => {
+const ReviewScreen = ({ route, navigation }) => {
   const [reviews, setReviews] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const movieId = route.params?.movieId;
 
   useEffect(() => {
+    console.log("Current user in ReviewScreen:", currentUser); // Debug line
+    const fetchCurrentUser = async () => {
+      try {
+        const userData = await getUserInfo();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchCurrentUser();
     const fetchReviews = async () => {
       if (!movieId) {
         console.error("No movieId provided");
@@ -16,8 +28,7 @@ const ReviewScreen = ({ route, currentUser }) => {
       }
 
       try {
-        const fetchedReviews = await getReviewsForMovie(String(movieId)); // Ensure movieId is a string
-        console.log("Fetched reviews:", fetchedReviews); // Debug log
+        const fetchedReviews = await getReviewsForMovie(String(movieId));
         setReviews(fetchedReviews);
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -39,11 +50,13 @@ const ReviewScreen = ({ route, currentUser }) => {
 
   return (
     <ScrollView style={styles.container}>
-      {reviews.map((review, index) => (
+      {reviews.map((review) => (
         <ReviewCard
-          key={index}
+          key={review.id}
           review={review}
-          isUserReview={review.userId === currentUser.id} // Assuming currentUser holds the current user's data
+          currentUser={currentUser}
+          navigation={navigation}
+          movieId={movieId} // Pass movieId as a prop
         />
       ))}
     </ScrollView>

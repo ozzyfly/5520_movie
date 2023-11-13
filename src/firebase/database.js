@@ -247,12 +247,32 @@ const fetchUserName = async () => {
   }
 };
 
-export const updateReviewDocument = async (reviewId, updatedReview) => {
+export const updateReviewDocument = async (
+  movieId,
+  reviewId,
+  updatedReview
+) => {
   try {
-    const reviewRef = doc(db, "reviews", reviewId);
+    const reviewRef = doc(db, "movies", movieId, "reviews", reviewId);
     await updateDoc(reviewRef, updatedReview);
   } catch (error) {
     console.error("Error updating review document:", error);
+    throw error;
+  }
+};
+
+export const getReviewDocument = async (movieId, reviewId) => {
+  try {
+    const reviewRef = doc(db, "movies", movieId, "reviews", reviewId);
+    const reviewSnap = await getDoc(reviewRef);
+    if (reviewSnap.exists()) {
+      return { id: reviewSnap.id, ...reviewSnap.data() };
+    } else {
+      console.log(`Review not found with ID: ${reviewId}`); // Debug
+      throw new Error("Review not found");
+    }
+  } catch (error) {
+    console.error("Error fetching review document:", error);
     throw error;
   }
 };

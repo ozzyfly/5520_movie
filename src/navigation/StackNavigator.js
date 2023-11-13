@@ -7,6 +7,7 @@ import ReviewScreen from "../screens/ReviewScreen";
 import { Ionicons } from "@expo/vector-icons";
 import ReviewListScreen from "../screens/ReviewListScreen";
 import AddReviewScreen from "../screens/AddReviewScreen";
+import EditReviewScreen from "../screens/EditReviewScreen";
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,11 @@ const StackNavigator = ({ navigation }) => {
         name="AddReviewScreen"
         component={AddReviewScreen}
         options={{ title: "Add a Review" }}
+      />
+      <Stack.Screen
+        name="EditReviewScreen"
+        component={EditReviewScreen}
+        options={{ title: "Edit Review" }}
       />
       {/* ... other screens */}
     </Stack.Navigator>
