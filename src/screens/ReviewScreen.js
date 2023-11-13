@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text } from "react-native";
 import { getReviewsForMovie } from "../firebase/database";
 import ReviewCard from "../components/ReviewCard";
 
-const ReviewScreen = ({ route }) => {
+const ReviewScreen = ({ route, currentUser }) => {
   const [reviews, setReviews] = useState([]);
   const movieId = route.params?.movieId;
 
@@ -40,7 +40,11 @@ const ReviewScreen = ({ route }) => {
   return (
     <ScrollView style={styles.container}>
       {reviews.map((review, index) => (
-        <ReviewCard key={index} review={review} />
+        <ReviewCard
+          key={index}
+          review={review}
+          isUserReview={review.userId === currentUser.id} // Assuming currentUser holds the current user's data
+        />
       ))}
     </ScrollView>
   );

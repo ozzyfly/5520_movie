@@ -246,3 +246,13 @@ const fetchUserName = async () => {
     setUserName("Unknown User"); // Fallback text
   }
 };
+
+export const updateReviewDocument = async (reviewId, updatedReview) => {
+  try {
+    const reviewRef = doc(db, "reviews", reviewId);
+    await updateDoc(reviewRef, updatedReview);
+  } catch (error) {
+    console.error("Error updating review document:", error);
+    throw error;
+  }
+};

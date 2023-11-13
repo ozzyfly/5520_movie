@@ -1,9 +1,11 @@
 // ReviewCard.js
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { getUserDocument } from "../firebase/database"; // Import the getUserDocument function
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { getUserDocument, updateReviewDocument } from "../firebase/database"; // Import the updateReviewDocument function
 
-const ReviewCard = ({ review }) => {
+const ReviewCard = ({ review, isUserReview }) => {
+  const [editMode, setEditMode] = useState(false);
+  const [editedReviewText, setEditedReviewText] = useState(review.text);
   const [userName, setUserName] = useState("Loading...");
 
   useEffect(() => {
@@ -20,15 +22,40 @@ const ReviewCard = ({ review }) => {
     fetchUserName();
   }, [review.userId]);
 
+  const handleSave = async () => {
+    try {
+      await updateReviewDocument(review.id, { text: editedReviewText });
+      setEditMode(false);
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
   const createdAtDate = review.createdAt.seconds
-    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString() // Already a string
+    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
     : "Unknown date";
 
   return (
     <View style={styles.card}>
       <Text style={styles.criticName}>{userName}</Text>
-      <Text style={styles.reviewContent}>{review.text}</Text>
-      <Text style={styles.reviewDate}>{createdAtDate}</Text>
+      {editMode ? (
+        <>
+          <TextInput
+            style={styles.reviewInput}
+            onChangeText={setEditedReviewText}
+            value={editedReviewText}
+          />
+          <Button title="Save" onPress={handleSave} />
+        </>
+      ) : (
+        <>
+          <Text style={styles.reviewContent}>{review.text}</Text>
+          <Text style={styles.reviewDate}>{createdAtDate}</Text>
+          {isUserReview && (
+            <Button title="Edit" onPress={() => setEditMode(true)} />
+          )}
+        </>
+      )}
     </View>
   );
 };
@@ -60,6 +87,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666666",
     textAlign: "right",
+  },
+  reviewInput: {
+    fontSize: 14,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 8,
+    padding: 8,
   },
 });
 export default ReviewCard;
