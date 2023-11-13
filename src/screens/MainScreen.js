@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, FlatList } from "react-native";
+import { ScrollView, Text, View, FlatList } from "react-native";
 import styles from "../styles/general";
 import typography from "../styles/typography";
 import { fetchTrendingMovies, fetchNewReleases } from "../utilities/tmdbAPI";
@@ -20,8 +20,10 @@ function MainScreen({ navigation }) {
   }, []);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={[typography.title, styles.header]}>All About Movies</Text>
+    <ScrollView style={[styles.container, { padding: 20 }]}>
+      <Text style={[typography.header1, { marginBottom: 20 }]}>
+        All About Movies
+      </Text>
       <View>
         <Text style={typography.sectionTitle}>Trending Movies</Text>
         <FlatList
@@ -33,7 +35,7 @@ function MainScreen({ navigation }) {
           horizontal
         />
       </View>
-      <View>
+      <View style={{ marginTop: 20 }}>
         <Text style={typography.sectionTitle}>New Releases</Text>
         <FlatList
           data={newReleases}

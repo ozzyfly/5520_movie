@@ -3,6 +3,12 @@ export default {
     fontSize: 28,
     fontWeight: "bold",
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 10,
+  },
   header2: {
     fontSize: 24,
     fontWeight: "bold",

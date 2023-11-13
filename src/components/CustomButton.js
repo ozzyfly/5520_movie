@@ -1,6 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
-import styles from "../styles/general.js";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
 const CustomButton = ({ title, onPress }) => {
   return (
@@ -9,5 +8,22 @@ const CustomButton = ({ title, onPress }) => {
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: "#4A90E2",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    textAlign: "center",
+  },
+});
 
 export default CustomButton;
