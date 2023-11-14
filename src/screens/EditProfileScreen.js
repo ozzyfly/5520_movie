@@ -11,6 +11,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { updateUserDocument, getMovieTitleById } from "../firebase/database";
+import ImageManager from "../components/ImageManager";
 
 const EditProfileScreen = ({ route, navigation }) => {
   const userData = route.params?.userData;
@@ -20,6 +21,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     userData?.favoriteMovies || []
   );
   const [favoriteMovieTitles, setFavoriteMovieTitles] = useState([]);
+  const [profilePic, setProfilePic] = useState(userData?.profilePic || "");
 
   useEffect(() => {
     const fetchMovieTitles = async () => {
@@ -56,6 +58,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         name,
         email,
         favoriteMovies,
+        profilePic,
       });
       Alert.alert("Success", "Profile updated successfully!");
       navigation.goBack();
@@ -79,6 +82,10 @@ const EditProfileScreen = ({ route, navigation }) => {
       </TouchableOpacity>
     </View>
   );
+
+  const handleImage = (uri) => {
+    setProfilePic(uri);
+  };
 
   return (
     <View style={styles.container}>
@@ -104,7 +111,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           <Text style={styles.headerText}>Favorite Movies:</Text>
         }
       />
-
+      <ImageManager passImageUri={handleImage} />
       <Button title="Save Profile" onPress={handleSaveProfile} />
     </View>
   );

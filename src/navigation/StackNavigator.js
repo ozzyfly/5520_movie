@@ -15,17 +15,9 @@ const StackNavigator = ({ navigation }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Main"
+        name="MainStackHome"
         component={MainScreen}
-        options={{
-          headerLeft: () => (
-            <Ionicons
-              name="menu"
-              size={24}
-              onPress={() => navigation.toggleDrawer()}
-            />
-          ),
-        }}
+        options={{ title: "" }}
       />
       <Stack.Screen
         name="MovieDetails"

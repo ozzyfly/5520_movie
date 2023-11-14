@@ -6,6 +6,7 @@ import {
   Alert,
   StyleSheet,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { getUserDocument, getMovieTitleById } from "../firebase/database";
 import { signOut } from "../firebase/auth";
@@ -76,6 +77,14 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerText}>Profile Information</Text>
+      <Image
+        source={
+          userData?.profilePic
+            ? { uri: userData.profilePic }
+            : require("../assets/images/OIP.jpeg") // Update this line
+        }
+        style={styles.profilePic}
+      />
       <Text style={styles.userInfoText}>Name: {userData?.name}</Text>
       <Text style={styles.userInfoText}>Email: {userData?.email}</Text>
       <Text style={styles.userInfoText}>
@@ -147,6 +156,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
 
