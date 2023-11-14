@@ -2,34 +2,44 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
   ActivityIndicator,
   Alert,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
-import { getUserDocument } from "../firebase/database";
+import { getUserDocument, getMovieTitleById } from "../firebase/database";
 import { signOut } from "../firebase/auth";
 import { auth } from "../firebase/config";
 
 const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
+  const [favoriteMovieTitles, setFavoriteMovieTitles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserAndMovieData = async () => {
+      setLoading(true);
       if (auth.currentUser) {
         try {
-          const data = await getUserDocument(auth.currentUser.uid);
-          setUserData(data);
+          const userData = await getUserDocument(auth.currentUser.uid);
+          if (userData && userData.favoriteMovies) {
+            const titles = await Promise.all(
+              userData.favoriteMovies.map((id) =>
+                getMovieTitleById(id.toString())
+              )
+            );
+            setFavoriteMovieTitles(titles);
+            setUserData(userData);
+          }
         } catch (error) {
-          console.error("Error fetching user data:", error);
-          Alert.alert("Error", "Could not fetch user data.");
+          console.error("Error fetching user and movie data:", error);
+          Alert.alert("Error", "Could not fetch user and movie data.");
         }
       }
       setLoading(false);
     };
 
-    fetchUserData();
+    fetchUserAndMovieData();
   }, []);
 
   const handleEditProfilePress = () => {
@@ -40,15 +50,10 @@ const ProfileScreen = ({ navigation }) => {
     navigation.navigate("EditProfileScreen", { userData: userData });
   };
 
-  // Logout functionality
   const handleLogout = async () => {
     try {
       await signOut();
-      // Navigate to the login screen or reset the navigation state as necessary
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      });
+      navigation.reset({ index: 0, routes: [{ name: "Login" }] });
     } catch (error) {
       Alert.alert("Logout Error", "Unable to logout. Please try again.");
     }
@@ -64,22 +69,31 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.errorText}>
           User not found, please log in again.
         </Text>
-        <Button
-          title="Go to Login"
-          onPress={() => navigation.navigate("Login")}
-        />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headerText}>Profile Information</Text>
       <Text style={styles.userInfoText}>Name: {userData?.name}</Text>
       <Text style={styles.userInfoText}>Email: {userData?.email}</Text>
-      {/* Add more user context here if needed */}
+      <Text style={styles.userInfoText}>
+        Favorite Movies: {favoriteMovieTitles.join(", ")}
+      </Text>
       <View style={styles.buttonContainer}>
-        <Button title="Edit Profile" onPress={handleEditProfilePress} />
-        <Button title="Logout" onPress={handleLogout} color="red" />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleEditProfilePress}
+        >
+          <Text style={styles.buttonText}>Edit Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "red" }]}
+          onPress={handleLogout}
+        >
+          <Text style={styles.buttonText}>Logout</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -98,17 +112,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f0f0f0",
   },
+  headerText: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#000",
+    alignSelf: "center",
+  },
   userInfoText: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 15,
     color: "#333",
+    fontWeight: "bold",
   },
   errorText: {
-    fontSize: 16,
+    fontSize: 18,
     color: "red",
+    fontWeight: "bold",
   },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 30,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  button: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 5,
+    minWidth: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

@@ -7,39 +7,79 @@ import {
   Image,
   StyleSheet,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import styles from "../styles/general";
 import typography from "../styles/typography";
 import { fetchMovieDetails } from "../utilities/tmdbAPI";
-import { saveMovieDetailsToFirestore } from "../firebase/database";
+import {
+  saveMovieDetailsToFirestore,
+  updateUserDocument,
+  getUserDocument,
+} from "../firebase/database";
+import { Ionicons } from "@expo/vector-icons";
+import { auth } from "../firebase/config";
 
 function MovieDetailsScreen({ route, navigation }) {
   const { movieId } = route.params;
   const [movieDetails, setMovieDetails] = useState(null);
-
-  useEffect(() => {
-    const fetchDetails = async () => {
-      const details = await fetchMovieDetails(movieId);
-      setMovieDetails(details);
-      saveMovieDetailsToFirestore(details);
-    };
-    fetchDetails();
-  }, [movieId]);
-
-  if (!movieDetails) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  // Function to convert minutes to hours and minutes
+  const [isFavorite, setIsFavorite] = useState(false);
+  const userId = auth.currentUser.uid;
   const formatRuntime = (runtime) => {
     const hours = Math.floor(runtime / 60);
     const minutes = runtime % 60;
     return `${hours}h ${minutes}min`;
   };
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const details = await fetchMovieDetails(movieId);
+      setMovieDetails(details);
+      saveMovieDetailsToFirestore(details); // Saving details to Firestore
+    };
+
+    fetchDetails();
+
+    const checkFavoriteStatus = async () => {
+      const userData = await getUserDocument(userId);
+      setIsFavorite(userData.favoriteMovies?.includes(movieId));
+    };
+
+    checkFavoriteStatus();
+  }, [movieId, userId]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Ionicons
+          name={isFavorite ? "heart" : "heart-outline"}
+          size={24}
+          color="red"
+          onPress={toggleFavorite}
+        />
+      ),
+    });
+  }, [isFavorite, navigation]);
+
+  const toggleFavorite = async () => {
+    try {
+      const userData = await getUserDocument(userId);
+      let updatedFavorites = userData.favoriteMovies || [];
+      if (isFavorite) {
+        updatedFavorites = updatedFavorites.filter((id) => id !== movieId);
+      } else {
+        updatedFavorites.push(movieId);
+      }
+      await updateUserDocument(userId, { favoriteMovies: updatedFavorites });
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite status:", error); // Debug line added
+    }
+  };
+
+  if (!movieDetails) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -49,6 +89,9 @@ function MovieDetailsScreen({ route, navigation }) {
         }}
         style={detailStyles.poster}
       />
+      <Text style={typography.subtitle}>
+        Runtime: {formatRuntime(movieDetails.runtime)}
+      </Text>
       <Text style={[typography.title, detailStyles.title]}>
         {movieDetails.title}
       </Text>

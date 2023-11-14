@@ -276,3 +276,22 @@ export const getReviewDocument = async (movieId, reviewId) => {
     throw error;
   }
 };
+
+export const getMovieTitleById = async (movieId) => {
+  if (!movieId || typeof movieId !== "string") {
+    return "Invalid Movie ID";
+  }
+
+  try {
+    const movieRef = doc(db, "movies", movieId);
+    const movieSnap = await getDoc(movieRef);
+
+    if (movieSnap.exists()) {
+      return movieSnap.data().title; // Assuming the title is stored in the 'title' field
+    } else {
+      return "Unknown Movie";
+    }
+  } catch (error) {
+    throw error;
+  }
+};
