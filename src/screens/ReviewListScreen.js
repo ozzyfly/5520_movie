@@ -27,11 +27,17 @@ const ReviewListScreen = ({ navigation }) => {
         const moviesWithDetails = await Promise.all(
           movies.map(async (movie) => {
             const reviews = await getReviewsForMovie(movie.id.toString());
-            const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
-            return { ...movie, reviews, ...movieDetails };
+            if (reviews.length > 0) {
+              const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
+              return { ...movie, reviews, ...movieDetails };
+            }
+            return null;
           })
         );
-        setMoviesWithReviews(moviesWithDetails);
+        const filteredMoviesWithDetails = moviesWithDetails.filter(
+          (movie) => movie !== null
+        );
+        setMoviesWithReviews(filteredMoviesWithDetails);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching movies:", err);

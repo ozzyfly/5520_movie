@@ -26,7 +26,6 @@ function NearbyCinemasScreen({ navigation }) {
 
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      console.log("Device Location:", latitude, longitude);
       setRegion({
         latitude: latitude,
         longitude: longitude,

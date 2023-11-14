@@ -10,7 +10,6 @@ const ReviewScreen = ({ route, navigation }) => {
   const movieId = route.params?.movieId;
 
   useEffect(() => {
-    console.log("Current user in ReviewScreen:", currentUser); // Debug line
     const fetchCurrentUser = async () => {
       try {
         const userData = await getUserInfo();
