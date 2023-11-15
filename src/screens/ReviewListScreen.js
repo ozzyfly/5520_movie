@@ -18,7 +18,7 @@ const ReviewListScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   const navigateToReviewScreen = (movieId) => {
-    navigation.navigate("ReviewScreen", { movieId });
+    navigation.navigate("ReviewScreen", { movieId: String(movieId) });
   };
 
   useFocusEffect(
@@ -62,6 +62,11 @@ const ReviewListScreen = ({ navigation }) => {
     return <Text>Error loading movies: {error.message}</Text>;
   }
 
+  const renderReviewPreview = (reviews) => {
+    if (reviews.length === 0) return <Text>No Reviews</Text>;
+    return <Text>{reviews[0].text.slice(0, 50)}...</Text>;
+  };
+
   const renderMovieItem = ({ item }) => (
     <TouchableOpacity
       onPress={() => navigateToReviewScreen(item.id)}
@@ -73,8 +78,15 @@ const ReviewListScreen = ({ navigation }) => {
       />
       <View style={styles.movieInfo}>
         <Text style={styles.movieTitle}>{item.title}</Text>
-        <Text style={styles.movieSubText}>View Reviews</Text>
-        {/* You can add more details here like release date, rating, etc. */}
+        <View style={styles.reviewPreview}>
+          {renderReviewPreview(item.reviews)}
+        </View>
+        <TouchableOpacity
+          onPress={() => navigateToReviewScreen(item.id)}
+          style={styles.viewAllButton}
+        >
+          <Text>View All Reviews</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -88,6 +100,7 @@ const ReviewListScreen = ({ navigation }) => {
     />
   );
 };
+
 const styles = StyleSheet.create({
   list: {
     backgroundColor: "#f0f0f0",
