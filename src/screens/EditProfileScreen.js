@@ -22,6 +22,10 @@ const EditProfileScreen = ({ route, navigation }) => {
   const [favoriteMovieTitles, setFavoriteMovieTitles] = useState([]);
   const [profilePic, setProfilePic] = useState(userData?.profilePic || "");
 
+  const handleImageUpload = async (downloadUrl) => {
+    setProfilePic(downloadUrl); // Update the state with the new image URL
+  };
+
   useEffect(() => {
     const fetchMovieTitles = async () => {
       try {
@@ -88,8 +92,8 @@ const EditProfileScreen = ({ route, navigation }) => {
     </View>
   );
 
-  const handleImage = (uri) => {
-    setProfilePic(uri);
+  const handleImage = async (downloadUrl) => {
+    setProfilePic(downloadUrl);
   };
 
   return (
@@ -116,7 +120,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           <Text style={styles.headerText}>Favorite Movies:</Text>
         }
       />
-      <ImageManager passImageUri={handleImage} />
+      <ImageManager onImageTaken={handleImageUpload} />
       <Button title="Save Profile" onPress={handleSaveProfile} />
     </View>
   );

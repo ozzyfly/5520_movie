@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { View, Image, Button, Alert, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { storage } from "../firebase/config"; // Import Firebase storage
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-export default function ImageManager({ passImageUri }) {
+export default function ImageManager({ onImageTaken }) {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
   const [imageUri, setImageUri] = useState("");
 
@@ -12,6 +14,21 @@ export default function ImageManager({ passImageUri }) {
     }
     const response = await requestPermission();
     return response.granted;
+  };
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const storageRef = ref(storage, `profile_pics/${Date.now()}`); // Create a reference
+
+    try {
+      const snapshot = await uploadBytes(storageRef, blob);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      return downloadUrl;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
   };
 
   const takeImageHandler = async () => {
@@ -27,9 +44,8 @@ export default function ImageManager({ passImageUri }) {
       });
 
       if (!result.cancelled) {
-        // Updated key usage
-        setImageUri(result.assets[0].uri);
-        passImageUri(result.assets[0].uri);
+        const downloadUrl = await uploadImage(result.assets[0].uri);
+        onImageTaken(downloadUrl);
       }
     } catch (err) {
       console.error("Error taking image: ", err);
