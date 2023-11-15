@@ -1,33 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { getReviewDocument, updateReviewDocument } from "../firebase/database";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  getReviewDocument,
+  updateReviewDocument,
+  deleteReviewDocument,
+} from "../firebase/database";
 
 const EditReviewScreen = ({ route, navigation }) => {
   const [reviewText, setReviewText] = useState("");
   const { reviewId, movieId } = route.params;
 
   useEffect(() => {
-    // Debug: Log the movieId and reviewId to ensure they are passed correctly
-    console.log("EditReviewScreen params:", route.params);
+    console.log("EditReviewScreen mounted. Params:", route.params);
 
-    // Handle the absence of movieId
     if (!movieId) {
       console.error("No movieId provided");
       Alert.alert("Error", "No movie ID provided.");
-      return; // Exit the useEffect hook early
+      return;
     }
 
     const fetchReview = async () => {
       try {
         console.log(
           `Fetching review with ID: ${reviewId} for movie ID: ${movieId}`
-        ); // Debug
+        );
         const reviewData = await getReviewDocument(movieId, reviewId);
-        console.log("Fetched review data:", reviewData); // Debug
+        console.log("Fetched review data:", reviewData);
+
         if (reviewData) {
           setReviewText(reviewData.text);
         } else {
-          console.error("Review data is undefined");
+          console.error("Review data is undefined or not found");
           Alert.alert("Error", "Review data not found.");
         }
       } catch (error) {
@@ -43,8 +54,9 @@ const EditReviewScreen = ({ route, navigation }) => {
     try {
       console.log(
         `Saving review with ID: ${reviewId} for movie ID: ${movieId}`
-      ); // Debug
+      );
       await updateReviewDocument(movieId, reviewId, { text: reviewText });
+      console.log("Review update successful");
       navigation.goBack();
     } catch (error) {
       console.error("Error updating review:", error);
@@ -52,13 +64,29 @@ const EditReviewScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      console.log(`Deleting review with ID: ${reviewId}`);
+      await deleteReviewDocument(movieId, reviewId);
+      console.log("Review deletion successful");
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      Alert.alert("Error", "Could not delete review.");
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.deleteIcon} onPress={handleDelete}>
+        <Ionicons name="trash-bin" size={24} color="red" />
+      </TouchableOpacity>
       <TextInput
         style={styles.textInput}
         multiline
         value={reviewText}
         onChangeText={setReviewText}
+        placeholder="Write your review..."
       />
       <Button title="Save Changes" onPress={handleSave} />
     </View>
@@ -68,14 +96,24 @@ const EditReviewScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
+    backgroundColor: "#fff",
   },
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "gray",
-    padding: 10,
-    marginBottom: 10,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 15,
+    fontSize: 16,
+    marginBottom: 20,
+    backgroundColor: "#f9f9f9",
+  },
+  deleteIcon: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
 });
 

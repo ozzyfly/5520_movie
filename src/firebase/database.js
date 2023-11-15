@@ -10,6 +10,7 @@ import {
   getDocs,
   query,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 
 // Create a user document in the "users" collection
@@ -292,6 +293,17 @@ export const getMovieTitleById = async (movieId) => {
       return "Unknown Movie";
     }
   } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteReviewDocument = async (movieId, reviewId) => {
+  try {
+    const reviewRef = doc(db, "movies", movieId, "reviews", reviewId);
+    await deleteDoc(reviewRef);
+    console.log(`Review with ID: ${reviewId} deleted successfully`);
+  } catch (error) {
+    console.error("Error deleting review document:", error);
     throw error;
   }
 };

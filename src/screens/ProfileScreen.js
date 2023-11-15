@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -12,36 +13,52 @@ import { getUserDocument, getMovieTitleById } from "../firebase/database";
 import { signOut } from "../firebase/auth";
 import { auth } from "../firebase/config";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
   const [userData, setUserData] = useState(null);
   const [favoriteMovieTitles, setFavoriteMovieTitles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserAndMovieData = async () => {
-      setLoading(true);
-      if (auth.currentUser) {
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserAndMovieData = async () => {
+        console.log("Fetching user and movie data");
+        setLoading(true);
         try {
-          const userData = await getUserDocument(auth.currentUser.uid);
-          if (userData && userData.favoriteMovies) {
+          const updatedUserData = route.params?.updatedUserData;
+          let userDataToUse = userData;
+
+          if (updatedUserData) {
+            console.log("Using updated user data from EditProfileScreen");
+            setUserData(updatedUserData);
+            userDataToUse = updatedUserData;
+          } else if (auth.currentUser) {
+            console.log("Fetching user data from Firebase");
+            const fetchedUserData = await getUserDocument(auth.currentUser.uid);
+            setUserData(fetchedUserData);
+            userDataToUse = fetchedUserData;
+          }
+
+          // Fetch movie titles
+          if (userDataToUse && userDataToUse.favoriteMovies) {
+            console.log("Fetching movie titles");
             const titles = await Promise.all(
-              userData.favoriteMovies.map((id) =>
+              userDataToUse.favoriteMovies.map((id) =>
                 getMovieTitleById(id.toString())
               )
             );
             setFavoriteMovieTitles(titles);
-            setUserData(userData);
           }
         } catch (error) {
           console.error("Error fetching user and movie data:", error);
           Alert.alert("Error", "Could not fetch user and movie data.");
+        } finally {
+          setLoading(false);
         }
-      }
-      setLoading(false);
-    };
+      };
 
-    fetchUserAndMovieData();
-  }, []);
+      fetchUserAndMovieData();
+    }, [route.params?.updatedUserData])
+  );
 
   const handleEditProfilePress = () => {
     if (!userData || !userData.id) {

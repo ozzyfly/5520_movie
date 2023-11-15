@@ -1,4 +1,3 @@
-// EditProfileScreen.js
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -39,30 +38,36 @@ const EditProfileScreen = ({ route, navigation }) => {
     };
 
     if (favoriteMovies.length) {
+      console.log("Fetching movie titles for favorite movies");
       fetchMovieTitles();
     }
   }, [favoriteMovies]);
 
   const handleSaveProfile = async () => {
+    console.log("Attempting to save profile");
     if (!userData?.id) {
+      console.error("No userId provided");
       Alert.alert("Error", "No userId provided");
       return;
     }
     if (!name.trim() || !email.trim()) {
+      console.error("Name and email cannot be empty");
       Alert.alert("Error", "Name and email cannot be empty.");
       return;
     }
 
     try {
-      await updateUserDocument(userData.id, {
+      const updatedUserData = {
         name,
         email,
         favoriteMovies,
         profilePic,
-      });
-      Alert.alert("Success", "Profile updated successfully!");
-      navigation.goBack();
+      };
+      await updateUserDocument(userData.id, updatedUserData);
+      console.log("Profile update successful");
+      navigation.navigate("ProfileScreen", { updatedUserData });
     } catch (error) {
+      console.error("Error updating profile:", error);
       Alert.alert(
         "Error updating profile",
         error.message || "An unknown error occurred"

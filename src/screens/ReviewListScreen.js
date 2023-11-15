@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Text,
   TouchableOpacity,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { fetchMovieDetails } from "../utilities/tmdbAPI";
 import { getMoviesWithReviews, getReviewsForMovie } from "../firebase/database";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ReviewListScreen = ({ navigation }) => {
   const [moviesWithReviews, setMoviesWithReviews] = useState([]);
@@ -20,34 +21,38 @@ const ReviewListScreen = ({ navigation }) => {
     navigation.navigate("ReviewScreen", { movieId });
   };
 
-  useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const movies = await getMoviesWithReviews();
-        const moviesWithDetails = await Promise.all(
-          movies.map(async (movie) => {
-            const reviews = await getReviewsForMovie(movie.id.toString());
-            if (reviews.length > 0) {
-              const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
-              return { ...movie, reviews, ...movieDetails };
-            }
-            return null;
-          })
-        );
-        const filteredMoviesWithDetails = moviesWithDetails.filter(
-          (movie) => movie !== null
-        );
-        setMoviesWithReviews(filteredMoviesWithDetails);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching movies:", err);
-        setError(err);
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchMovies = async () => {
+        try {
+          setLoading(true);
+          const movies = await getMoviesWithReviews();
+          const moviesWithDetails = await Promise.all(
+            movies.map(async (movie) => {
+              const reviews = await getReviewsForMovie(movie.id.toString());
+              if (reviews.length > 0) {
+                const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
+                return { ...movie, reviews, ...movieDetails };
+              }
+              return null;
+            })
+          );
+          const filteredMoviesWithDetails = moviesWithDetails.filter(
+            (movie) => movie !== null
+          );
+          setMoviesWithReviews(filteredMoviesWithDetails);
+        } catch (err) {
+          console.error("Error fetching movies:", err);
+          setError(err);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    fetchMovies();
-  }, []);
+      fetchMovies();
+      return () => {}; // Cleanup function, if needed
+    }, [])
+  );
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;

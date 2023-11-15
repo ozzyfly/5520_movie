@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { ScrollView, StyleSheet, Text } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { getReviewsForMovie } from "../firebase/database";
 import ReviewCard from "../components/ReviewCard";
 import { getUserInfo } from "../firebase/auth";
@@ -9,33 +10,35 @@ const ReviewScreen = ({ route, navigation }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const movieId = route.params?.movieId;
 
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const userData = await getUserInfo();
-        setCurrentUser(userData);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  const fetchReviews = useCallback(async () => {
+    if (!movieId) {
+      console.error("No movieId provided");
+      return;
+    }
 
-    fetchCurrentUser();
-    const fetchReviews = async () => {
-      if (!movieId) {
-        console.error("No movieId provided");
-        return;
-      }
-
-      try {
-        const fetchedReviews = await getReviewsForMovie(String(movieId));
-        setReviews(fetchedReviews);
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
-    fetchReviews();
+    try {
+      const fetchedReviews = await getReviewsForMovie(String(movieId));
+      setReviews(fetchedReviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
   }, [movieId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCurrentUser = async () => {
+        try {
+          const userData = await getUserInfo();
+          setCurrentUser(userData);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+
+      fetchCurrentUser();
+      fetchReviews();
+    }, [fetchReviews])
+  );
 
   if (!movieId) {
     return <Text style={styles.noDataText}>No movie ID provided</Text>;
