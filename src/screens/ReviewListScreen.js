@@ -62,9 +62,14 @@ const ReviewListScreen = ({ navigation }) => {
     return <Text>Error loading movies: {error.message}</Text>;
   }
 
-  const renderReviewPreview = (reviews) => {
-    if (reviews.length === 0) return <Text>No Reviews</Text>;
-    return <Text>{reviews[0].text.slice(0, 50)}...</Text>;
+  const renderReviewPreviews = (reviews) => {
+    if (reviews.length === 0)
+      return <Text style={styles.noReviewsText}>No Reviews</Text>;
+    return reviews.slice(0, 3).map((review, index) => (
+      <Text key={index} style={styles.reviewText}>
+        {review.text.slice(0, 50)}...
+      </Text>
+    ));
   };
 
   const renderMovieItem = ({ item }) => (
@@ -78,14 +83,18 @@ const ReviewListScreen = ({ navigation }) => {
       />
       <View style={styles.movieInfo}>
         <Text style={styles.movieTitle}>{item.title}</Text>
-        <View style={styles.reviewPreview}>
-          {renderReviewPreview(item.reviews)}
+        <Text style={styles.movieSubText}>
+          Release Date: {item.release_date}
+        </Text>
+        <Text style={styles.movieSubText}>Rating: {item.vote_average}/10</Text>
+        <View style={styles.reviewPreviewsContainer}>
+          {renderReviewPreviews(item.reviews)}
         </View>
         <TouchableOpacity
           onPress={() => navigateToReviewScreen(item.id)}
           style={styles.viewAllButton}
         >
-          <Text>View All Reviews</Text>
+          <Text style={styles.viewAllButtonText}>View All Reviews</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
@@ -104,6 +113,9 @@ const ReviewListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   list: {
     backgroundColor: "#f0f0f0",
+  },
+  reviewPreviewsContainer: {
+    marginTop: 5,
   },
   movieItem: {
     flexDirection: "row",
@@ -132,6 +144,23 @@ const styles = StyleSheet.create({
   movieSubText: {
     fontSize: 14,
     color: "#666",
+  },
+  reviewText: {
+    fontSize: 14,
+    color: "#444",
+    marginBottom: 5,
+  },
+  noReviewsText: {
+    fontSize: 14,
+    color: "#888",
+  },
+  viewAllButtonText: {
+    color: "#007bff",
+  },
+  movieSubText: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 5,
   },
 });
 export default ReviewListScreen;

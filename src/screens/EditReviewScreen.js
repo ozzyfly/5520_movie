@@ -2,10 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   TextInput,
+  Text,
   Button,
   StyleSheet,
   Alert,
   TouchableOpacity,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -77,19 +80,23 @@ const EditReviewScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.deleteIcon} onPress={handleDelete}>
-        <Ionicons name="trash-bin" size={24} color="red" />
-      </TouchableOpacity>
-      <TextInput
-        style={styles.textInput}
-        multiline
-        value={reviewText}
-        onChangeText={setReviewText}
-        placeholder="Write your review..."
-      />
-      <Button title="Save Changes" onPress={handleSave} />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.deleteIcon} onPress={handleDelete}>
+          <Ionicons name="trash-bin" size={24} color="red" />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.textInput}
+          multiline
+          value={reviewText}
+          onChangeText={setReviewText}
+          placeholder="Write your review..."
+        />
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Save Changes</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -102,18 +109,34 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "#007bff",
     borderRadius: 10,
     padding: 15,
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: "#f9f9f9",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   deleteIcon: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 20,
+    right: 20,
     zIndex: 1,
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

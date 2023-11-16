@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
-  Button,
+  TouchableOpacity,
+  Text,
   Alert,
   FlatList,
-  Text,
-  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import { updateUserDocument, getMovieTitleById } from "../firebase/database";
@@ -23,7 +22,7 @@ const EditProfileScreen = ({ route, navigation }) => {
   const [profilePic, setProfilePic] = useState(userData?.profilePic || "");
 
   const handleImageUpload = async (downloadUrl) => {
-    setProfilePic(downloadUrl); // Update the state with the new image URL
+    setProfilePic(downloadUrl);
   };
 
   useEffect(() => {
@@ -42,20 +41,16 @@ const EditProfileScreen = ({ route, navigation }) => {
     };
 
     if (favoriteMovies.length) {
-      console.log("Fetching movie titles for favorite movies");
       fetchMovieTitles();
     }
   }, [favoriteMovies]);
 
   const handleSaveProfile = async () => {
-    console.log("Attempting to save profile");
     if (!userData?.id) {
-      console.error("No userId provided");
       Alert.alert("Error", "No userId provided");
       return;
     }
     if (!name.trim() || !email.trim()) {
-      console.error("Name and email cannot be empty");
       Alert.alert("Error", "Name and email cannot be empty.");
       return;
     }
@@ -68,10 +63,8 @@ const EditProfileScreen = ({ route, navigation }) => {
         profilePic,
       };
       await updateUserDocument(userData.id, updatedUserData);
-      console.log("Profile update successful");
       navigation.navigate("ProfileScreen", { updatedUserData });
     } catch (error) {
-      console.error("Error updating profile:", error);
       Alert.alert(
         "Error updating profile",
         error.message || "An unknown error occurred"
@@ -91,10 +84,6 @@ const EditProfileScreen = ({ route, navigation }) => {
       </TouchableOpacity>
     </View>
   );
-
-  const handleImage = async (downloadUrl) => {
-    setProfilePic(downloadUrl);
-  };
 
   return (
     <View style={styles.container}>
@@ -121,36 +110,58 @@ const EditProfileScreen = ({ route, navigation }) => {
         }
       />
       <ImageManager onImageTaken={handleImageUpload} />
-      <Button title="Save Profile" onPress={handleSaveProfile} />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
+        <Text style={styles.saveButtonText}>Save Profile</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 20,
+    backgroundColor: "#f0f0f0",
   },
   input: {
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
+    borderColor: "#007bff",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    fontSize: 16,
   },
   movieItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 5,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 5,
-    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   deleteText: {
     color: "red",
+    fontWeight: "bold",
   },
   headerText: {
     fontWeight: "bold",
-    marginBottom: 5,
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 

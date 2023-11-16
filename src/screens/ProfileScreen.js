@@ -126,11 +126,48 @@ const ProfileScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  profilePic: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignSelf: "center",
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  button: {
+    backgroundColor: "#4CAF50", // Changed color
+    padding: 15,
+    borderRadius: 30,
+    minWidth: 120,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: "flex-start",
     backgroundColor: "#f0f0f0",
+    padding: 10, // Added padding
+  },
+  noDataText: {
+    fontSize: 18, // Increased font size
+    color: "#333", // Changed color
+    textAlign: "center",
+    marginTop: 20,
   },
   centered: {
     flex: 1,
