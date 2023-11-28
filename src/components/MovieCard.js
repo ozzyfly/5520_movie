@@ -25,21 +25,26 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
+    backgroundColor: "#fff", // Assuming white is part of the color scheme
+    // Adjust shadow for a more subtle look
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   image: {
     width: "100%",
     height: 225,
-    borderRadius: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   title: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 16, // Slightly larger font size for better readability
     fontWeight: "bold",
     textAlign: "center",
+    color: "#333", // Darker color for text for better contrast
   },
 });
 
