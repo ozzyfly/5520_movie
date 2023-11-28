@@ -24,8 +24,12 @@ const StackNavigator = ({ navigation }) => {
       Alert.alert("Logout Error", "Unable to logout. Please try again.");
     }
   };
-  const navigateToProfile = () => {
-    navigation.navigate("ProfileScreen");
+  const handleBackPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate("MainStackHome");
+    }
   };
 
   return (
@@ -40,22 +44,14 @@ const StackNavigator = ({ navigation }) => {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        headerLeft: () => (
-          <TouchableOpacity onPress={handleLogout} style={{ paddingRight: 20 }}>
-            <Ionicons name="exit-outline" size={30} color="black" />
-          </TouchableOpacity>
-        ),
         headerRight: () => (
           <TouchableOpacity
             onPress={() => navigation.navigate("ProfileScreen")}
-            style={{ paddingLeft: 20 }}
+            style={{ paddingRight: 20 }}
           >
             <Ionicons name="person-circle-outline" size={30} color="black" />
           </TouchableOpacity>
         ),
-        headerLeftContainerStyle: {
-          padding: 10,
-        },
         headerRightContainerStyle: {
           padding: 10,
         },
@@ -64,47 +60,137 @@ const StackNavigator = ({ navigation }) => {
       <Stack.Screen
         name="MainStackHome"
         component={MainScreen}
-        options={{ title: "" }}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="exit-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        options={{ title: "Profile" }}
+        options={{
+          title: "Profile",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="MovieDetails"
         component={MovieDetailsScreen}
-        options={{ title: "Movie Details" }}
+        options={{
+          title: "Movie Details",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
-        options={{ title: "Edit Profile" }}
+        options={{
+          title: "Edit Profile",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="ReviewScreen"
         component={ReviewScreen}
-        options={{ title: "Movie Reviews" }}
+        options={{
+          title: "Movie Reviews",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="AddReviewScreen"
         component={AddReviewScreen}
-        options={{ title: "Add a Review" }}
+        options={{
+          title: "Add a Review",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="EditReviewScreen"
         component={EditReviewScreen}
-        options={{ title: "Edit Review" }}
+        options={{
+          title: "Edit Review",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="ReviewList"
         component={ReviewListScreen}
-        options={{ title: "Review List" }}
+        options={{
+          title: "Review List",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="Cinemas"
         component={NearbyCinemasScreen}
-        options={{ title: "Nearby Cinemas" }}
+        options={{
+          title: "Nearby Cinemas",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleBackPress}
+              style={{ paddingLeft: 20 }}
+            >
+              <Ionicons name="arrow-back-outline" size={30} color="black" />
+            </TouchableOpacity>
+          ),
+        }}
       />
       {/* ... other screens */}
     </Stack.Navigator>
