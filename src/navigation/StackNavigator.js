@@ -24,15 +24,41 @@ const StackNavigator = ({ navigation }) => {
       Alert.alert("Logout Error", "Unable to logout. Please try again.");
     }
   };
+  const navigateToProfile = () => {
+    navigation.navigate("ProfileScreen");
+  };
 
   return (
     <Stack.Navigator
       screenOptions={{
-        headerRight: () => (
-          <TouchableOpacity onPress={handleLogout} style={{ marginRight: 10 }}>
-            <Ionicons name="log-out-outline" size={24} color="black" />
+        headerStyle: {
+          backgroundColor: "#fff",
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTintColor: "#000",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        headerLeft: () => (
+          <TouchableOpacity onPress={handleLogout} style={{ paddingRight: 20 }}>
+            <Ionicons name="exit-outline" size={30} color="black" />
           </TouchableOpacity>
         ),
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ProfileScreen")}
+            style={{ paddingLeft: 20 }}
+          >
+            <Ionicons name="person-circle-outline" size={30} color="black" />
+          </TouchableOpacity>
+        ),
+        headerLeftContainerStyle: {
+          padding: 10,
+        },
+        headerRightContainerStyle: {
+          padding: 10,
+        },
       }}
     >
       <Stack.Screen
