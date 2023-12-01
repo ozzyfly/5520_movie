@@ -90,7 +90,6 @@ const ProfileScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Profile Information</Text>
       <Image
         source={
           userData?.profilePic
