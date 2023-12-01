@@ -73,7 +73,7 @@ function MovieDetailsScreen({ route, navigation }) {
       await updateUserDocument(userId, { favoriteMovies: updatedFavorites });
       setIsFavorite(!isFavorite);
     } catch (error) {
-      console.error("Error toggling favorite status:", error); // Debug line added
+      console.error("Error toggling favorite status:", error);
     }
   };
 

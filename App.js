@@ -7,8 +7,19 @@ import { auth } from "./src/firebase/config";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async function (notification) {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: true,
+    };
+  },
+});
 
 const App = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
