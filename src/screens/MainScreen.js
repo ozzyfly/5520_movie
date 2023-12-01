@@ -34,11 +34,13 @@ function MainScreen({ navigation }) {
 
   return (
     <ScrollView style={[styles.container, { padding: 20 }]}>
-      <Text style={[typography.header1, { marginBottom: 20 }]}>
+      <Text style={[typography.header1, { marginBottom: 20, color: "#333" }]}>
         All About Movies
       </Text>
-      <View>
-        <Text style={typography.sectionTitle}>Trending Movies</Text>
+      <View style={{ marginBottom: 20 }}>
+        <Text style={[typography.sectionTitle, { marginBottom: 10 }]}>
+          Trending Movies
+        </Text>
         <FlatList
           data={trendingMovies}
           renderItem={({ item }) => (
@@ -46,10 +48,13 @@ function MainScreen({ navigation }) {
           )}
           keyExtractor={(item) => item.id.toString()}
           horizontal
+          showsHorizontalScrollIndicator={false}
         />
       </View>
-      <View style={{ marginTop: 20 }}>
-        <Text style={typography.sectionTitle}>New Releases</Text>
+      <View style={{ marginBottom: 20 }}>
+        <Text style={[typography.sectionTitle, { marginBottom: 10 }]}>
+          New Releases
+        </Text>
         <FlatList
           data={newReleases}
           renderItem={({ item }) => (
@@ -57,6 +62,7 @@ function MainScreen({ navigation }) {
           )}
           keyExtractor={(item) => item.id.toString()}
           horizontal
+          showsHorizontalScrollIndicator={false}
         />
       </View>
     </ScrollView>
