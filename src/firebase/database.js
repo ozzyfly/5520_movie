@@ -43,10 +43,12 @@ export const updateUserDocument = async (userId, update) => {
 };
 
 // Create a review document in the "reviews" collection
-export const createReviewDocument = async (reviewData) => {
+// Modify createReviewDocument to include an imageUrl parameter
+export const createReviewDocument = async (reviewData, imageUrl) => {
   try {
     const reviewRef = doc(collection(db, "reviews"));
-    await setDoc(reviewRef, reviewData);
+    const data = imageUrl ? { ...reviewData, imageUrl } : reviewData;
+    await setDoc(reviewRef, data);
   } catch (error) {
     console.error("Error creating review document:", error);
     throw error;
@@ -108,7 +110,19 @@ export const getReplies = async (reviewId) => {
   }
 };
 
-export const addReviewToMovie = async (movieId, userId, reviewText) => {
+export const addReviewToMovie = async (
+  movieId,
+  userId,
+  reviewText,
+  imageUrl
+) => {
+  const newReview = {
+    userId,
+    text: reviewText,
+    createdAt: new Date(),
+    imageUrl,
+  };
+  console.log("Saving review:", newReview);
   if (!movieId || typeof movieId !== "string") {
     throw new Error("Invalid movieId");
   }
@@ -121,18 +135,16 @@ export const addReviewToMovie = async (movieId, userId, reviewText) => {
 
   try {
     const reviewRef = collection(db, "movies", movieId, "reviews");
-    const newReview = { userId, text: reviewText, createdAt: new Date() };
     await addDoc(reviewRef, newReview);
   } catch (error) {
     console.error("Error adding review to movie:", error);
-    throw new Error(error);
+    throw new Error(error.message);
   }
 };
 
 export const getMoviesWithReviews = async () => {
   try {
     const moviesRef = collection(db, "movies");
-    // const q = query(moviesRef, where("hasReviews", "==", true)); // Comment this out for testing
     const querySnapshot = await getDocs(moviesRef); // Fetch all movies
     console.log(
       "Query executed, number of movies fetched:",

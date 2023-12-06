@@ -58,7 +58,7 @@ const ReviewScreen = ({ route, navigation }) => {
           review={review}
           currentUser={currentUser}
           navigation={navigation}
-          movieId={movieId} // Pass movieId as a prop
+          movieId={movieId}
         />
       ))}
     </ScrollView>
