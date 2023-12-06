@@ -44,8 +44,7 @@ export default function ImageManager({ onImageTaken }) {
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
-        const pickedImageUri = result.assets[0].uri; // Updated line for SDK 48
-        console.log("Image picked:", pickedImageUri); // Debug line
+        const pickedImageUri = result.assets[0].uri;
         setImageUri(pickedImageUri);
         const downloadUrl = await uploadImage(pickedImageUri);
         onImageTaken(downloadUrl);

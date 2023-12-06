@@ -117,12 +117,9 @@ const ProfileScreen = ({ navigation, route }) => {
           style={styles.button}
           onPress={handleEditProfilePress}
         >
-          <Text style={styles.buttonText}>Edit Profile</Text>
+          <Text style={styles.buttonText}>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "red" }]}
-          onPress={handleLogout}
-        >
+        <TouchableOpacity style={[styles.button]} onPress={handleLogout}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
@@ -190,6 +187,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+    alignSelf: "center",
   },
   favoriteMoviesContainer: {
     marginTop: 20,

@@ -122,7 +122,6 @@ export const addReviewToMovie = async (
     createdAt: new Date(),
     imageUrl,
   };
-  console.log("Saving review:", newReview);
   if (!movieId || typeof movieId !== "string") {
     throw new Error("Invalid movieId");
   }
@@ -146,10 +145,6 @@ export const getMoviesWithReviews = async () => {
   try {
     const moviesRef = collection(db, "movies");
     const querySnapshot = await getDocs(moviesRef); // Fetch all movies
-    console.log(
-      "Query executed, number of movies fetched:",
-      querySnapshot.docs.length
-    );
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -232,9 +227,8 @@ export const getUserDocument = async (userId) => {
     const userRef = doc(db, "users", userId);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
-      return { id: userSnap.id, ...userSnap.data() }; // Include the user's ID
+      return { id: userSnap.id, ...userSnap.data() };
     } else {
-      console.log("No user found with ID:", userId);
       throw new Error("User does not exist");
     }
   } catch (error) {
@@ -249,9 +243,8 @@ const fetchUserName = async () => {
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
-      setUserName(userSnap.data().name); // Assuming the user's name is stored under a 'name' field
+      setUserName(userSnap.data().name);
     } else {
-      console.log("No such document!");
       setUserName("Unknown User");
     }
   } catch (error) {
@@ -281,7 +274,6 @@ export const getReviewDocument = async (movieId, reviewId) => {
     if (reviewSnap.exists()) {
       return { id: reviewSnap.id, ...reviewSnap.data() };
     } else {
-      console.log(`Review not found with ID: ${reviewId}`); // Debug
       throw new Error("Review not found");
     }
   } catch (error) {
@@ -313,7 +305,6 @@ export const deleteReviewDocument = async (movieId, reviewId) => {
   try {
     const reviewRef = doc(db, "movies", movieId, "reviews", reviewId);
     await deleteDoc(reviewRef);
-    console.log(`Review with ID: ${reviewId} deleted successfully`);
   } catch (error) {
     console.error("Error deleting review document:", error);
     throw error;

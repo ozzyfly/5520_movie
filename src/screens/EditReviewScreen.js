@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
   Text,
-  Button,
   StyleSheet,
   Alert,
   TouchableOpacity,
+  Image,
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
@@ -15,51 +15,45 @@ import {
   getReviewDocument,
   updateReviewDocument,
   deleteReviewDocument,
+  uploadImageToFirebase,
 } from "../firebase/database";
+import ImageManager from "../components/ImageManager";
 
 const EditReviewScreen = ({ route, navigation }) => {
   const [reviewText, setReviewText] = useState("");
+  const [imageUri, setImageUri] = useState(null);
   const { reviewId, movieId } = route.params;
 
   useEffect(() => {
-    console.log("EditReviewScreen mounted. Params:", route.params);
-
-    if (!movieId) {
-      console.error("No movieId provided");
-      Alert.alert("Error", "No movie ID provided.");
-      return;
-    }
-
     const fetchReview = async () => {
       try {
-        console.log(
-          `Fetching review with ID: ${reviewId} for movie ID: ${movieId}`
-        );
         const reviewData = await getReviewDocument(movieId, reviewId);
-        console.log("Fetched review data:", reviewData);
-
         if (reviewData) {
           setReviewText(reviewData.text);
-        } else {
-          console.error("Review data is undefined or not found");
-          Alert.alert("Error", "Review data not found.");
+          setImageUri(reviewData.imageUrl);
         }
       } catch (error) {
-        console.error("Error fetching review in EditReviewScreen:", error);
+        console.error("Error fetching review:", error);
         Alert.alert("Error", "Could not fetch review data.");
       }
     };
-
     fetchReview();
   }, [reviewId, movieId]);
 
   const handleSave = async () => {
     try {
-      console.log(
-        `Saving review with ID: ${reviewId} for movie ID: ${movieId}`
-      );
-      await updateReviewDocument(movieId, reviewId, { text: reviewText });
-      console.log("Review update successful");
+      let imageUrl = imageUri;
+      if (imageUri && imageUri.startsWith("file://")) {
+        imageUrl = await uploadImageToFirebase(imageUri);
+      }
+
+      const updatedReview = {
+        text: reviewText,
+        imageUrl: imageUrl,
+      };
+
+      await updateReviewDocument(movieId, reviewId, updatedReview);
+      Alert.alert("Success", "Review updated successfully.");
       navigation.goBack();
     } catch (error) {
       console.error("Error updating review:", error);
@@ -69,14 +63,20 @@ const EditReviewScreen = ({ route, navigation }) => {
 
   const handleDelete = async () => {
     try {
-      console.log(`Deleting review with ID: ${reviewId}`);
       await deleteReviewDocument(movieId, reviewId);
-      console.log("Review deletion successful");
-      navigation.goBack();
+      navigation.goBack(); // Navigate back after deletion
     } catch (error) {
       console.error("Error deleting review:", error);
       Alert.alert("Error", "Could not delete review.");
     }
+  };
+
+  const handleCancelEdit = () => {
+    navigation.goBack(); // Go back to previous screen without making changes
+  };
+
+  const removeImage = () => {
+    setImageUri(null);
   };
 
   return (
@@ -85,6 +85,19 @@ const EditReviewScreen = ({ route, navigation }) => {
         <TouchableOpacity style={styles.deleteIcon} onPress={handleDelete}>
           <Ionicons name="trash-bin" size={24} color="red" />
         </TouchableOpacity>
+        <ImageManager onImageTaken={setImageUri} />
+        {imageUri && (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: imageUri }} style={styles.reviewImage} />
+            <TouchableOpacity
+              onPress={removeImage}
+              style={styles.removeImageButton}
+            >
+              <Ionicons name="close-circle" size={24} color="#ff5252" />
+              {/* Text component removed */}
+            </TouchableOpacity>
+          </View>
+        )}
         <TextInput
           style={styles.textInput}
           multiline
@@ -92,9 +105,17 @@ const EditReviewScreen = ({ route, navigation }) => {
           onChangeText={setReviewText}
           placeholder="Write your review..."
         />
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>Save Changes</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={handleCancelEdit}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -115,11 +136,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     backgroundColor: "#f9f9f9",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   deleteIcon: {
     position: "absolute",
@@ -127,13 +143,40 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 1,
   },
-  saveButton: {
-    backgroundColor: "#4CAF50",
+  imageContainer: {
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  reviewImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+  },
+  removeImageButton: {
+    marginTop: 10,
+    alignSelf: "center",
+  },
+  removeImageText: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 20,
+  },
+  cancelButton: {
+    backgroundColor: "#007bff",
     padding: 10,
     borderRadius: 5,
-    alignItems: "center",
   },
-  saveButtonText: {
+  saveButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,

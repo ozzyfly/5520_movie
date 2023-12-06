@@ -5,12 +5,14 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  Image,
   StyleSheet,
 } from "react-native";
 import { auth, storage } from "../firebase/config";
 import { addReviewToMovie } from "../firebase/database";
 import ImageManager from "../components/ImageManager";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { Ionicons } from "@expo/vector-icons";
 
 const AddReviewScreen = ({ route, navigation }) => {
   const { movieId } = route.params;
@@ -24,7 +26,6 @@ const AddReviewScreen = ({ route, navigation }) => {
       const storageRef = ref(storage, `review_images/${Date.now()}`);
       const uploadTask = await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(uploadTask.ref);
-      console.log("Uploaded image URL:", downloadURL); // Debug line
       return downloadURL;
     } catch (error) {
       console.error("Error uploading image to Firebase:", error);
@@ -40,10 +41,8 @@ const AddReviewScreen = ({ route, navigation }) => {
       let imageUrl = null;
       if (imageUri) {
         imageUrl = await uploadImageToFirebase(imageUri);
-        console.log("Image URL to be saved:", imageUrl); // Debug line
       }
 
-      console.log("Review text:", reviewText); // Debug line
       await addReviewToMovie(movieId, userId, reviewText, imageUrl);
       navigation.goBack();
     } catch (error) {
@@ -52,9 +51,12 @@ const AddReviewScreen = ({ route, navigation }) => {
     }
   };
 
+  const removeImage = () => {
+    setImageUri(null);
+  };
+
   return (
     <View style={styles.container}>
-      <ImageManager onImageTaken={setImageUri} />
       <TextInput
         style={styles.textInput}
         placeholder="Write your review..."
@@ -62,9 +64,30 @@ const AddReviewScreen = ({ route, navigation }) => {
         onChangeText={setReviewText}
         multiline
       />
-      <TouchableOpacity style={styles.submitButton} onPress={handleAddReview}>
-        <Text style={styles.submitButtonText}>Submit Review</Text>
-      </TouchableOpacity>
+      <ImageManager onImageTaken={setImageUri} />
+      {imageUri && (
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: imageUri }} style={styles.reviewImage} />
+          <TouchableOpacity
+            onPress={removeImage}
+            style={styles.removeImageButton}
+          >
+            <Ionicons name="close-circle" size={24} color="#ff5252" />
+            {/* Text component removed */}
+          </TouchableOpacity>
+        </View>
+      )}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleAddReview}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -94,6 +117,40 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  imagePreviewContainer: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  previewImage: {
+    width: "100%",
+    height: 200,
+    marginBottom: 10,
+  },
+  removeIcon: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  removeImageButton: {
+    marginTop: 10,
+    alignSelf: "center",
+  },
+  removeImageText: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 5,
+  },
+  cancelButton: {
+    backgroundColor: "#007bff",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,

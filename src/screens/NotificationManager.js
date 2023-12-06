@@ -4,12 +4,10 @@ import * as Notifications from "expo-notifications";
 
 export default function NotificationManager() {
   const verifyPermission = async () => {
-    console.log("Requesting permissions...");
     try {
       const status = await Notifications.getPermissionsAsync();
 
       if (status.granted) {
-        console.log("Notification permission already granted.");
         return true;
       }
 
@@ -27,7 +25,6 @@ export default function NotificationManager() {
       const hasPermission = await verifyPermission();
 
       if (!hasPermission) {
-        console.log("Notification permission denied.");
         Alert.alert("You need to give permission to send notifications");
         return;
       }
