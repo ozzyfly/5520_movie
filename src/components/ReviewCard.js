@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserDocument } from "../firebase/database";
+import { Ionicons } from "@expo/vector-icons";
 
-const ReviewCard = ({ review, currentUser, navigation, movieId }) => {
+const ReviewCard = ({
+  review,
+  currentUser,
+  isUserReview,
+  navigation,
+  movieId,
+}) => {
   const [userName, setUserName] = useState("Loading...");
 
   useEffect(() => {
@@ -23,21 +30,15 @@ const ReviewCard = ({ review, currentUser, navigation, movieId }) => {
     ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
     : "Unknown date";
 
-  const handlePress = () => {
-    if (currentUser && review.userId === currentUser.id) {
-      navigation.navigate("EditReviewScreen", {
-        reviewId: review.id,
-        movieId: movieId,
-      });
-    } else {
-      console.log(
-        "Review not owned by current user or currentUser is undefined"
-      );
-    }
+  const navigateToEditScreen = () => {
+    navigation.navigate("EditReviewScreen", {
+      reviewId: review.id,
+      movieId: movieId,
+    });
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} style={styles.card}>
+    <TouchableOpacity onPress={navigateToEditScreen} style={styles.card}>
       <Text style={styles.criticName}>{userName}</Text>
       <Text style={styles.reviewContent}>{review.text}</Text>
       {review.imageUrl ? (
@@ -46,6 +47,14 @@ const ReviewCard = ({ review, currentUser, navigation, movieId }) => {
         <Text>No image provided</Text>
       )}
       <Text style={styles.reviewDate}>{createdAtDate}</Text>
+      {isUserReview && (
+        <TouchableOpacity
+          onPress={navigateToEditScreen}
+          style={styles.iconContainer}
+        >
+          <Ionicons name="ios-pencil" size={24} color="black" />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 };
@@ -85,6 +94,19 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "right",
     marginTop: 8,
+  },
+  editButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 10,
+  },
+  iconContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 8,
+    borderRadius: 12,
   },
 });
 

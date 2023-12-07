@@ -57,6 +57,7 @@ const ReviewScreen = ({ route, navigation }) => {
           key={review.id}
           review={review}
           currentUser={currentUser}
+          isUserReview={currentUser?.id === review.userId}
           navigation={navigation}
           movieId={movieId}
         />

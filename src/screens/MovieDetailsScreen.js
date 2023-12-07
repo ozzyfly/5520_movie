@@ -1,4 +1,3 @@
-// src/screens/MovieDetailsScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -126,7 +125,6 @@ function MovieDetailsScreen({ route, navigation }) {
           })
         }
       />
-      {/* You can add more details like directors, cast, etc., here */}
     </ScrollView>
   );
 }
