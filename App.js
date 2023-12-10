@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -7,8 +6,19 @@ import { auth } from "./src/firebase/config";
 import Login from "./src/screens/Login";
 import Signup from "./src/screens/Signup";
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
+
+Notifications.setNotificationHandler({
+  handleNotification: async function (notification) {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: true,
+    };
+  },
+});
 
 const App = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -18,7 +28,7 @@ const App = () => {
       setIsUserLoggedIn(!!user);
     });
 
-    return unsubscribe; // Clean up the listener on unmount
+    return unsubscribe;
   }, []);
 
   return (

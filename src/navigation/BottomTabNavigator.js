@@ -1,8 +1,7 @@
-// BottomTabNavigator.js
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import StackNavigator from "./StackNavigator"; // This will include the 'Main' screen and others you have defined.
+import StackNavigator from "./StackNavigator";
 import NearbyCinemasScreen from "../screens/NearbyCinemasScreen";
 import ReviewListScreen from "../screens/ReviewListScreen";
 

@@ -1,4 +1,3 @@
-// src/screens/MovieDetailsScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -35,7 +34,7 @@ function MovieDetailsScreen({ route, navigation }) {
     const fetchDetails = async () => {
       const details = await fetchMovieDetails(movieId);
       setMovieDetails(details);
-      saveMovieDetailsToFirestore(details); // Saving details to Firestore
+      saveMovieDetailsToFirestore(details);
     };
 
     fetchDetails();
@@ -73,7 +72,7 @@ function MovieDetailsScreen({ route, navigation }) {
       await updateUserDocument(userId, { favoriteMovies: updatedFavorites });
       setIsFavorite(!isFavorite);
     } catch (error) {
-      console.error("Error toggling favorite status:", error); // Debug line added
+      console.error("Error toggling favorite status:", error);
     }
   };
 
@@ -126,7 +125,6 @@ function MovieDetailsScreen({ route, navigation }) {
           })
         }
       />
-      {/* You can add more details like directors, cast, etc., here */}
     </ScrollView>
   );
 }

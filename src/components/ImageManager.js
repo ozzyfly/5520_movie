@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Image, Button, Alert, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { storage } from "../firebase/config"; // Import Firebase storage
+import { storage } from "../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function ImageManager({ onImageTaken }) {
@@ -19,7 +19,7 @@ export default function ImageManager({ onImageTaken }) {
   const uploadImage = async (uri) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    const storageRef = ref(storage, `profile_pics/${Date.now()}`); // Create a reference
+    const storageRef = ref(storage, `profile_pics/${Date.now()}`);
 
     try {
       const snapshot = await uploadBytes(storageRef, blob);
@@ -43,12 +43,14 @@ export default function ImageManager({ onImageTaken }) {
         allowsEditing: true,
       });
 
-      if (!result.cancelled) {
-        const downloadUrl = await uploadImage(result.assets[0].uri);
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const pickedImageUri = result.assets[0].uri;
+        setImageUri(pickedImageUri);
+        const downloadUrl = await uploadImage(pickedImageUri);
         onImageTaken(downloadUrl);
       }
     } catch (err) {
-      console.error("Error taking image: ", err);
+      console.error("Error taking image:", err);
       Alert.alert("Error", "Could not take image.");
     }
   };

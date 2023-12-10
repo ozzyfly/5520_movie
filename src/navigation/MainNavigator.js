@@ -15,7 +15,6 @@ const MainNavigator = () => {
         name="Notification Setup"
         component={NotificationSetupScreen}
       />
-      {/* Add other screens here as necessary */}
     </Stack.Navigator>
   );
 };

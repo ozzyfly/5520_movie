@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth"; // Ensure this is imported
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { auth } from "../firebase/config"; // Ensure this is imported
+import { auth } from "../firebase/config";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
@@ -16,7 +16,6 @@ export default function Login({ navigation }) {
     }
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
-      console.log(userCred);
     } catch (err) {
       console.log(err);
       if (err.code === "auth/invalid-login-credentials") {

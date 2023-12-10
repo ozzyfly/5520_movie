@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 
 const MovieCard = ({ movie, navigation }) => {
   const posterPath = movie.poster_path
@@ -25,8 +25,7 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
     overflow: "hidden",
-    backgroundColor: "#fff", // Assuming white is part of the color scheme
-    // Adjust shadow for a more subtle look
+    backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -41,10 +40,10 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 5,
-    fontSize: 16, // Slightly larger font size for better readability
+    fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#333", // Darker color for text for better contrast
+    color: "#333",
   },
 });
 
