@@ -34,7 +34,7 @@ function MovieDetailsScreen({ route, navigation }) {
     const fetchDetails = async () => {
       const details = await fetchMovieDetails(movieId);
       setMovieDetails(details);
-      saveMovieDetailsToFirestore(details); // Saving details to Firestore
+      saveMovieDetailsToFirestore(details);
     };
 
     fetchDetails();

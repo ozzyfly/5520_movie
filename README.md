@@ -25,7 +25,11 @@ A mobile application built using React Native, focusing on movie-related functio
 
 ## Screenshots
 
-(Screenshots placeholder)
+![Home Screen](https://drive.google.com/file/d/1JUXLKrHyHeU7A9pEDsK2bmlUUexjVyvA/view "Home Screen")
+
+## Demo Video
+
+Check out the demo video of our app: [Demo Video of the App](https://drive.google.com/file/d/1JUBh5uMczazAyrcy-9nq0DB9PbpnirJF/view?usp=sharing)
 
 ## Contributions
 

@@ -36,7 +36,6 @@ const ProfileScreen = ({ navigation, route }) => {
             userDataToUse = fetchedUserData;
           }
 
-          // Fetch movie titles
           if (userDataToUse && userDataToUse.favoriteMovies) {
             const titles = await Promise.all(
               userDataToUse.favoriteMovies.map((id) =>
@@ -94,7 +93,7 @@ const ProfileScreen = ({ navigation, route }) => {
         source={
           userData?.profilePic
             ? { uri: userData.profilePic }
-            : require("../assets/images/OIP.jpeg") // Update this line
+            : require("../assets/images/OIP.jpeg")
         }
         style={styles.profilePic}
       />
@@ -133,14 +132,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f0f0f0",
     padding: 20,
-    alignItems: "center", // Center align items
+    alignItems: "center",
   },
   profilePic: {
-    width: 150, // Increased size
+    width: 150,
     height: 150,
-    borderRadius: 75, // Adjusted for new size
+    borderRadius: 75,
     alignSelf: "center",
-    marginBottom: 30, // Increased margin
+    marginBottom: 30,
     borderWidth: 3,
     borderColor: "#ddd",
     shadowColor: "#000",
@@ -168,14 +167,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 30,
     flexDirection: "row",
-    justifyContent: "space-between", // Adjust for spacing
-    width: "80%", // Adjust width for better spacing
+    justifyContent: "space-between",
+    width: "80%",
   },
   button: {
-    backgroundColor: "#4CAF50", // Elegant green
+    backgroundColor: "#4CAF50",
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 25, // Rounded corners
+    borderRadius: 25,
     minWidth: 100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
   favoriteMovieTitle: {
     fontSize: 16,
     color: "#333",
-    marginBottom: 5, // Space between movie titles
+    marginBottom: 5,
   },
 });
 

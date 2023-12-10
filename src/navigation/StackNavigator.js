@@ -192,7 +192,6 @@ const StackNavigator = ({ navigation }) => {
           ),
         }}
       />
-      {/* ... other screens */}
     </Stack.Navigator>
   );
 };

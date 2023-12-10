@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -29,7 +28,7 @@ const App = () => {
       setIsUserLoggedIn(!!user);
     });
 
-    return unsubscribe; // Clean up the listener on unmount
+    return unsubscribe;
   }, []);
 
   return (

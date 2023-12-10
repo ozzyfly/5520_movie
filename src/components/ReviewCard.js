@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserDocument } from "../firebase/database";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -31,10 +31,12 @@ const ReviewCard = ({
     : "Unknown date";
 
   const navigateToEditScreen = () => {
-    navigation.navigate("EditReviewScreen", {
-      reviewId: review.id,
-      movieId: movieId,
-    });
+    if (isUserReview) {
+      navigation.navigate("EditReviewScreen", {
+        reviewId: review.id,
+        movieId: movieId,
+      });
+    }
   };
 
   return (

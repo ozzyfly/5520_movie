@@ -1,4 +1,3 @@
-// database.js
 import { db } from "./config";
 import {
   collection,
@@ -13,7 +12,6 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-// Create a user document in the "users" collection
 export const createUserDocument = async (userId, userData) => {
   if (!userId || typeof userId !== "string") {
     throw new Error("Invalid or missing userId");
@@ -31,7 +29,6 @@ export const createUserDocument = async (userId, userData) => {
   }
 };
 
-// Update user data in the "users" collection
 export const updateUserDocument = async (userId, update) => {
   try {
     const userRef = doc(db, "users", userId);
@@ -42,8 +39,6 @@ export const updateUserDocument = async (userId, update) => {
   }
 };
 
-// Create a review document in the "reviews" collection
-// Modify createReviewDocument to include an imageUrl parameter
 export const createReviewDocument = async (reviewData, imageUrl) => {
   try {
     const reviewRef = doc(collection(db, "reviews"));
@@ -55,7 +50,6 @@ export const createReviewDocument = async (reviewData, imageUrl) => {
   }
 };
 
-// Create a movie document in the "movies" collection
 export const createMovieDocument = async (movieData) => {
   try {
     const movieRef = doc(collection(db, "movies"));
@@ -66,7 +60,6 @@ export const createMovieDocument = async (movieData) => {
   }
 };
 
-// Function to create a review for a movie
 export const createReview = async (movieId, review) => {
   try {
     const reviewRef = doc(collection(db, "reviews"));
@@ -76,7 +69,6 @@ export const createReview = async (movieId, review) => {
   }
 };
 
-// Function to get reviews for a movie
 export const getReviews = async (movieId) => {
   try {
     const reviewsRef = collection(db, "reviews");
@@ -88,18 +80,15 @@ export const getReviews = async (movieId) => {
   }
 };
 
-// Function to create a reply for a review
 export const createReply = async (reviewId, reply) => {
   try {
     const replyRef = doc(collection(db, `reviews/${reviewId}/replies`));
     await setDoc(replyRef, reply);
-    // Here, you would trigger a notification for the review's author.
   } catch (error) {
     console.error("Error creating reply:", error);
   }
 };
 
-// Function to get replies for a review
 export const getReplies = async (reviewId) => {
   try {
     const repliesRef = collection(db, `reviews/${reviewId}/replies`);
@@ -144,7 +133,7 @@ export const addReviewToMovie = async (
 export const getMoviesWithReviews = async () => {
   try {
     const moviesRef = collection(db, "movies");
-    const querySnapshot = await getDocs(moviesRef); // Fetch all movies
+    const querySnapshot = await getDocs(moviesRef);
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error fetching movies:", error);
@@ -152,7 +141,6 @@ export const getMoviesWithReviews = async () => {
   }
 };
 
-// Function to add a reply to a review
 export const addReplyToReview = async (movieId, reviewId, replyData) => {
   try {
     const replyRef = collection(
@@ -164,14 +152,13 @@ export const addReplyToReview = async (movieId, reviewId, replyData) => {
       "replies"
     );
     await addDoc(replyRef, replyData);
-    return replyRef.id; // Return the reply ID to use for notifications
+    return replyRef.id;
   } catch (error) {
     console.error("Error adding reply to review:", error);
     throw error;
   }
 };
 
-// Function to get reviews for a movie
 export const getReviewsForMovie = async (movieId) => {
   try {
     if (typeof movieId !== "string") {
@@ -182,11 +169,10 @@ export const getReviewsForMovie = async (movieId) => {
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error getting reviews for movie:", error);
-    throw error; // Rethrow the error to be caught by the calling function
+    throw error;
   }
 };
 
-// Function to get replies for a review
 export const getRepliesForReview = async (movieId, reviewId) => {
   try {
     const repliesRef = collection(
@@ -239,7 +225,7 @@ export const getUserDocument = async (userId) => {
 
 const fetchUserName = async () => {
   try {
-    const userRef = doc(db, "users", review.userId); // Assuming 'db' is your Firestore instance
+    const userRef = doc(db, "users", review.userId);
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
@@ -249,7 +235,7 @@ const fetchUserName = async () => {
     }
   } catch (error) {
     console.error("Error fetching user name:", error);
-    setUserName("Unknown User"); // Fallback text
+    setUserName("Unknown User");
   }
 };
 
@@ -292,7 +278,7 @@ export const getMovieTitleById = async (movieId) => {
     const movieSnap = await getDoc(movieRef);
 
     if (movieSnap.exists()) {
-      return movieSnap.data().title; // Assuming the title is stored in the 'title' field
+      return movieSnap.data().title;
     } else {
       return "Unknown Movie";
     }

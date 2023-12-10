@@ -31,7 +31,7 @@ const ReviewListScreen = ({ navigation }) => {
             movies.map(async (movie) => {
               const reviews = await getReviewsForMovie(movie.id.toString());
               if (reviews.length > 0) {
-                const movieDetails = await fetchMovieDetails(movie.id); // Fetch additional details
+                const movieDetails = await fetchMovieDetails(movie.id);
                 return { ...movie, reviews, ...movieDetails };
               }
               return null;
@@ -50,7 +50,7 @@ const ReviewListScreen = ({ navigation }) => {
       };
 
       fetchMovies();
-      return () => {}; // Cleanup function, if needed
+      return () => {};
     }, [])
   );
 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-    alignItems: "center", // Align items in a row
+    alignItems: "center",
   },
   movieImage: {
     width: 80,

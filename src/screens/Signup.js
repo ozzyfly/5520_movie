@@ -1,4 +1,3 @@
-// Signup.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -6,7 +5,7 @@ import { auth, db } from "../firebase/config";
 import { createUserDocument } from "../firebase/database";
 
 export default function Signup({ navigation }) {
-  const [name, setName] = useState(""); // New state for name
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,7 +33,6 @@ export default function Signup({ navigation }) {
         name,
         email,
         createdAt: new Date(),
-        // Add additional fields as needed
       });
       navigation.navigate("Home");
     } catch (err) {

@@ -64,7 +64,7 @@ const EditReviewScreen = ({ route, navigation }) => {
   const handleDelete = async () => {
     try {
       await deleteReviewDocument(movieId, reviewId);
-      navigation.goBack(); // Navigate back after deletion
+      navigation.goBack();
     } catch (error) {
       console.error("Error deleting review:", error);
       Alert.alert("Error", "Could not delete review.");
@@ -72,7 +72,7 @@ const EditReviewScreen = ({ route, navigation }) => {
   };
 
   const handleCancelEdit = () => {
-    navigation.goBack(); // Go back to previous screen without making changes
+    navigation.goBack();
   };
 
   const removeImage = () => {
