@@ -51,12 +51,21 @@ Developed core functionalities and established the project structure:
 - **Navigation Setup:**
   - Implemented `BottomTabNavigator`, `DrawerNavigator`, and `StackNavigator` for intuitive navigation within the app.
 
-### Iteration 2 and 3
+### Iteration 2
 
 Focused on adding and refining features:
 
-- **Enhanced Authentication:** Streamlined user login and registration process.
-- **Camera Integration:** Enabled users to update their profile pictures using the camera.
-- **Location-Based Features:** Introduced a map showing nearby cinemas using user's location data.
-- **Notifications:** Set up a system for users to receive updates about movies.
-- **External API Use:** Integrated external APIs to fetch real-time data about movies and reviews.
+- **Enhanced Authentication:** Implemented user login and sign-up using Firebase Authentication.
+- **Camera Integration:** Enabled users to update their profile pictures using the device's camera.
+- **Location-Based Features:** Introduced features for finding nearby cinemas using Google Maps API.
+- **Notifications:** Set up a system for users to receive movie-related notifications using Expo Notifications.
+
+### Iteration 3
+
+In this iteration, the following functionalities were added or refined:
+
+- **Authentication:** Improved stability and user experience for authentication processes.
+- **Camera Use:** Enhanced the camera functionality for better image handling and uploading to Firebase Storage.
+- **Location Tracking:** Fine-tuned the location-based features for more accurate and efficient cinema discovery.
+- **Notifications:** Expanded the notification system for more interactive and timely reminders.
+- **External API Integration:** Integrated additional endpoints from TMDB API for fetching detailed movie information.
