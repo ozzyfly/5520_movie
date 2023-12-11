@@ -1,20 +1,54 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./src/firebase/config";
+import Login from "./src/screens/Login";
+import Signup from "./src/screens/Signup";
+import DrawerNavigator from "./src/navigation/DrawerNavigator";
+import * as Notifications from "expo-notifications";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+Notifications.setNotificationHandler({
+  handleNotification: async function (notification) {
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: true,
+    };
   },
 });
+
+const App = () => {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsUserLoggedIn(!!user);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {isUserLoggedIn ? (
+          <Stack.Screen
+            name="Home"
+            component={DrawerNavigator}
+            options={{ headerShown: false }}
+          />
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
