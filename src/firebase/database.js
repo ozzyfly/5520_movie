@@ -7,8 +7,6 @@ import {
   getDoc,
   addDoc,
   getDocs,
-  query,
-  where,
   deleteDoc,
 } from "firebase/firestore";
 
@@ -36,66 +34,6 @@ export const updateUserDocument = async (userId, update) => {
   } catch (error) {
     console.error("Error updating user document:", error);
     throw error;
-  }
-};
-
-export const createReviewDocument = async (reviewData, imageUrl) => {
-  try {
-    const reviewRef = doc(collection(db, "reviews"));
-    const data = imageUrl ? { ...reviewData, imageUrl } : reviewData;
-    await setDoc(reviewRef, data);
-  } catch (error) {
-    console.error("Error creating review document:", error);
-    throw error;
-  }
-};
-
-export const createMovieDocument = async (movieData) => {
-  try {
-    const movieRef = doc(collection(db, "movies"));
-    await setDoc(movieRef, movieData);
-  } catch (error) {
-    console.error("Error creating movie document:", error);
-    throw error;
-  }
-};
-
-export const createReview = async (movieId, review) => {
-  try {
-    const reviewRef = doc(collection(db, "reviews"));
-    await setDoc(reviewRef, { ...review, movieId });
-  } catch (error) {
-    console.error("Error creating review:", error);
-  }
-};
-
-export const getReviews = async (movieId) => {
-  try {
-    const reviewsRef = collection(db, "reviews");
-    const q = query(reviewsRef, where("movieId", "==", movieId));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-  }
-};
-
-export const createReply = async (reviewId, reply) => {
-  try {
-    const replyRef = doc(collection(db, `reviews/${reviewId}/replies`));
-    await setDoc(replyRef, reply);
-  } catch (error) {
-    console.error("Error creating reply:", error);
-  }
-};
-
-export const getReplies = async (reviewId) => {
-  try {
-    const repliesRef = collection(db, `reviews/${reviewId}/replies`);
-    const querySnapshot = await getDocs(repliesRef);
-    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error fetching replies:", error);
   }
 };
 
@@ -141,24 +79,6 @@ export const getMoviesWithReviews = async () => {
   }
 };
 
-export const addReplyToReview = async (movieId, reviewId, replyData) => {
-  try {
-    const replyRef = collection(
-      db,
-      "movies",
-      movieId,
-      "reviews",
-      reviewId,
-      "replies"
-    );
-    await addDoc(replyRef, replyData);
-    return replyRef.id;
-  } catch (error) {
-    console.error("Error adding reply to review:", error);
-    throw error;
-  }
-};
-
 export const getReviewsForMovie = async (movieId) => {
   try {
     if (typeof movieId !== "string") {
@@ -169,24 +89,6 @@ export const getReviewsForMovie = async (movieId) => {
     return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (error) {
     console.error("Error getting reviews for movie:", error);
-    throw error;
-  }
-};
-
-export const getRepliesForReview = async (movieId, reviewId) => {
-  try {
-    const repliesRef = collection(
-      db,
-      "movies",
-      movieId,
-      "reviews",
-      reviewId,
-      "replies"
-    );
-    const querySnapshot = await getDocs(repliesRef);
-    return querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  } catch (error) {
-    console.error("Error getting replies for review:", error);
     throw error;
   }
 };
@@ -220,22 +122,6 @@ export const getUserDocument = async (userId) => {
   } catch (error) {
     console.error("Error fetching user document:", error);
     throw error;
-  }
-};
-
-const fetchUserName = async () => {
-  try {
-    const userRef = doc(db, "users", review.userId);
-    const userSnap = await getDoc(userRef);
-
-    if (userSnap.exists()) {
-      setUserName(userSnap.data().name);
-    } else {
-      setUserName("Unknown User");
-    }
-  } catch (error) {
-    console.error("Error fetching user name:", error);
-    setUserName("Unknown User");
   }
 };
 

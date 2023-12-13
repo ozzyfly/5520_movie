@@ -3,13 +3,7 @@ import { Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserDocument } from "../firebase/database";
 import { Ionicons } from "@expo/vector-icons";
 
-const ReviewCard = ({
-  review,
-  currentUser,
-  isUserReview,
-  navigation,
-  movieId,
-}) => {
+const ReviewCard = ({ review, isUserReview, navigation, movieId }) => {
   const [userName, setUserName] = useState("Loading...");
 
   useEffect(() => {

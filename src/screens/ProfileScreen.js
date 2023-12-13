@@ -89,14 +89,16 @@ const ProfileScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={
-          userData?.profilePic
-            ? { uri: userData.profilePic }
-            : require("../assets/images/OIP.jpeg")
-        }
-        style={styles.profilePic}
-      />
+      <View style={styles.profilePicContainer}>
+        <Image
+          source={
+            userData?.profilePic
+              ? { uri: userData.profilePic }
+              : require("../assets/images/OIP.jpeg")
+          }
+          style={styles.profilePic}
+        />
+      </View>
       <Text style={styles.userInfoText}>Name: {userData?.name}</Text>
       <Text style={styles.userInfoText}>Email: {userData?.email}</Text>
       <View style={styles.favoriteMoviesContainer}>
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
   },
-  profilePic: {
+  profilePicContainer: {
     width: 150,
     height: 150,
     borderRadius: 75,
@@ -147,6 +149,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 6,
+    overflow: "hidden",
+  },
+  profilePic: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 75,
   },
   headerText: {
     fontSize: 24,

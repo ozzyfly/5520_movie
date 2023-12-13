@@ -3,17 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import {
-  collection,
-  doc,
-  setDoc,
-  updateDoc,
-  getDoc,
-  addDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 export const signIn = async (email, password) => {
   try {
